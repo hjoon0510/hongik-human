@@ -1,0 +1,82 @@
+# Introduction
+
+이 프로젝트는 스마트 팩토리를 위하여 딥러닝 Speech API와 IOT 센서 주변장치 (예: Motion Sensor)를 이용하여 무인 공장 자동 관리 시스템을 개발하기 위한 소스들을 구성하고 있다. 
+
+
+# 설치 방법
+
+### Raspberry Pi3 개발보드에 OS 설치
+제일먼저 [doc](doc/) 폴더에 업로드 한 문서를 읽으십시오. 그리고 Raspberry Pi3 장치에 Raspbian OS를 설치하십시오.
+
+
+### 무인자동화시스템 소프트웨어 설치
+무인자동화시스템는 Python (모션 인식 프로그램) 및 PHP (웹 응용 프로그램) 언어를 이용하여 개발하였습니다.
+다음과 같이 설치하십시오.
+
+```bash
+# windows10 PC에서 mobaxterm 소프트웨어로 ssh 세션을 실행하십시오
+
+$ sudo chown pi:pi /var/www/html
+$ cd /var/www/html
+$ sudo apt -y remove nano
+$ sudo apt -y install git vim
+$ sudo update-alternatives --set editor /usr/bin/vim.tiny
+$ git clone https://github.com/hjoon0510/golden-time.git
+$ cd ./golden-time
+$ sudo chown -R www-data:www-data /var/www/html/golden-time/audio/
+$ sudo visudo
+--------------- /etc/sudoers: start ----------------
+#includedir /etc/sudoers.d
+www-data        ALL=(ALL) NOPASSWD: ALL <---- Please append a aphache webserver id here.!!!!
+--------------- /etc/sudoers: ending ---------------
+$ vi ./webapp/webapp_config.php  
+   $db_host = 'localhost';
+   $db_name = 'sbdb';
+   $db_user = 'root';
+   $db_pass = 'raspberry';
+```
+
+# 실행방법
+1. 웹 응용 프로그램 및 PIR Motion Sensor 프로그램을 시작하는 방법에 대해 설명합니다. 무인자동화시스템 소프트웨어는 launcher라는 프로그램을 통해서 부팅시마다 자동으로 실행됩니다. 그러므로, 아래처럼 gcc 명령으로 launcher.c를 컴파일하여주세요. 그 다음으로  컴파일하여 생성된 `launcher` 파일을 실행만 하면 됩니다.
+```bash
+$ cd ums
+$ gcc launcher.c -o launcher 
+$ ./launcher
+$ firefox http://{rpi_ip_address}/ums/
+```
+2. camera 기능(얼굴인식) 을 사용하는법입니다. 
+제일먼저 파이썬으로 개발되어 있는 라이브러리들을 설치해야 한다. 
+```
+pip3 install face_recoginition
+pip3 install dlib
+pip3 install opencv-contrib-python
+pip3 install imutils
+pip3 install scikit-learn
+```
+
+2.1 Hog 알고리즘으로 실행할 경우 (얼굴)인식률이 높지만 정확도가 떨어진다
+* 요구사항: Python 3.5.3
+* 이미지 폴더: ./dataset/
+```bash
+cd opencv-face-recognition-hog
+./01-encoding.sh
+./02-run.sh
+```
+2.2 SSD 알고리즘으로 실핼할 경우 (얼굴)인식률이 떨어지지만 정확도가 높다.
+* 요구사항: Python 3.5.3
+* 이미지 폴더: ./dataset/
+```bash
+cd opencv-face-recognition-ssd
+./01-dataset.sh
+./02-train.sh
+./03-run-camera.sh
+```
+3.push 서비스를 설치한다 
+* https://github.com/hjoon0510/golden-time/blob/master/gotify/README.md
+
+# 참고자료
+* 라즈베리파이로 시작하는 핸드메이드 IoT, https://github.com/bjpublic/raspberrypi
+* 라즈베리파이 커뮤니티 사이트, https://www.raspberrypi.org/community/
+* C++ deep-learning library containing machine learning algorithm, http://dlib.net/
+* Face Recognition, https://pypi.org/project/face-recognition/
+

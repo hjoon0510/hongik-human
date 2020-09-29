@@ -1,0 +1,1206 @@
+
+# 가이드: 필수 작업:  
+- [운영체제 설치하기](#운영체제-설치하기)
+- [브라우져 한글깨짐 현상 해결하기](#브라우져-한글깨짐현상-해결하기)
+- [부팅시 SSH서버 실행하기](#부팅시-SSH서버-실행하기)
+- [WiFi 자동잡기](#WiFi-자동잡기)
+- [와이파이 설정하기](#와이파이-설정하기)
+- [Raspberry Pi 화면을 180도 회전시키기](#raspberry-pi-화면을-180도-회전시키기)
+- [xinput_calibrator으로 터치스크린 보정하기](#xinput_calibrator으로-터치스크린-보정하기)
+- [Timezone을 한국시간으로 변경하기](#Timezone을-한국시간으로-변경하기)
+- [Apache 웹서버 설치하기](#Apache-웹서버-설치하기)
+- [PHP 개발환경 설치](#php-개발환경-설치)
+- [MySQL 데이타베이스 서버 설치하기](#mysql-데이타베이스-서버-설치하기)
+- [phpMyAdmin 설치하기](#phpmyadmin-설치하기)
+
+# 가이드: 옵션 작업
+- [VNC Server Setup on Raspberry Pi 3](#vnc-server-setup-on-raspberry-pi-3)
+- [How to do realtime streamming service with camera and gstreamer software](#how-to-do-realtime-streamming-service-with-camera-and-gstreamer-software)
+- [How to enable onboard ALSA audio to play sound file](#How-to-enable-onboard-ALSA-audio-to-play-sound-file)
+- [How to make live stream video using vlc from webcam on Linux](#how-to-make-live-stream-video-using-vlc-from-webcam-on-linux)
+- [How to record your voice from microphone of USB webcam using ALSA](#how-to-record-your-voice-from-microphone-of-usb-webcam-using-alsa)
+- [Play wma file with cvlc and mplayer command](#play-wma-file-with-cvlc-and-mplayer-command)
+- [이메일 발송하기](#이메일-발송하기)
+- [How to convert sound file from wma to wav](#how-to-convert-sound-file-from-wma-to-wav)
+- [터미널을 통한 WiFi 연결](#터미널을-통한-wifi-연결)
+- [cron job으로부터 email notifications를 중지하는 방법](#cron-job으로부터-email-notifications를-중지하는-방법) 
+- [Raspbian OS에서 한글 입출력방법](#Raspbian-OS에서-한글-입출력방법)
+
+
+
+
+
+
+# 운영체제 설치하기
+* 참고 사이트
+   * https://elinux.org/RPi_Easy_SD_Card_Setup
+
+* 단계1: 인기 있는 OS 종류: 1) Raspbian Stretch (=Debian Stretch, 9.0), 2) Ubuntu MATE (=Ubuntu 16.04, Xenial)
+   * OS 이미지를 다운로드하기 위하여 https://www.raspberrypi.org/downloads/ 에 접속후에 1) Raspbian Stretch OS을 다운로드 한다.
+   * 권장 버젼: https://downloads.raspberrypi.org/raspbian_full/images/ (raspbian_full-2019-06-24/	)
+
+* 단계2: micro SDcard를 포맷한다.
+   * Windows PC: SD_CardFormatter0500SetupEN.exe를 이용한다.
+      * 다운로드 주소: https://www.download3k.com/Install-SDFormatter.html 
+   * Ubuntu PC: fat32 형식으로 포맷하도록 한다. (우분투에서 etcher 프로그램 사용시 gparted 명령을 수행안해도 된다.)
+      * 댜운로드 주소: sudo apt install gparted
+
+* 단계3: microSD카드에 *.img를 flash 한다.
+   * https://www.raspberrypi.org/documentation/installation/installing-images/windows.md|
+   * Windows PC:  다음 프로그램중의 하나를 설치 및  실행후에 다운로드한 OS 이미지를 micro SDcard에 설치한다.
+      * https://downloads.raspberrypi.org/imager/imager_1.4.exe (추천)
+      * balenaEtcher-Setup-1.5.19-x64.exe  - https://www.balena.io/etcher/
+      * rufus-3.5.exe - https://rufus.ie/
+      * win32diskimager-1.0.0-install.exe - https://sourceforge.net/projects/win32diskimager/files/Archive/ 
+
+      
+   * Ubuntu PC:
+      * GUI
+         * 다운로드 주소: https://www.balena.io/etcher/
+      * CLI: using dd command
+   ```bash
+   $ unzip -p 2018-03-13-raspbian-stretch.zip
+   $ cat /proc/partitions
+   $ sudo time dd bs=4M if=2018-03-13-raspbian-stretch.img of=/dev/sdc conv=fsync
+   1192+1 Record in
+   1192+1 Record out
+   5000000000 bytes (5.0 GB, 4.7 GiB) copied, 425.176 s, 11.8 MB/s
+   
+   real    7m5.178s
+   user    0m0.000s
+   sys     0m2.772s
+
+   $ sync
+   $ sudo hdparm -z /dev/sdc (How to re-read a partition table without rebooting) 
+   $ cat /proc/partitions  | grep sdc
+      8       32   15558144 sdc
+      8       33      64512 sdc1 (c: W95 FAT32 LBA)
+      8       34    4816896 sdc2 (83: Linux)
+   ```   
+      
+* 단계4: RPi3보드 부팅시에 Ubuntu OS를 자동으로 로그인하기  (자동 로그인하려는 계정이 'hjoon0510'이라고 가정한다.)
+   ```
+   $ sudo vi /etc/lightdm/lightdm.conf
+   [Seat:*]
+   autologin-guest=false
+   autologin-user=hjoon0510
+   autologin-user-timeout=0
+   ```
+
+* 단계5: SD카드 파티션들을 수동으로 resizing하기
+   * 기본적으로 .img는 2GiB 또는 2GiB용량으로 제작된다. 그래서  사용자가 가지고 있는 microSD카드가 64gb이라면, 파티션의 resize가 필요하다.
+     * https://elinux.org/RPi_Resize_Flash_Partitions
+   ```
+   $ sudo fdisk -l /dev/mmcblk0
+   $ sudo dd if=/dev/mmcblk0 of=$HOME/sdbackup.img bs=512
+
+   $ sudo umount /dev/mmcblk0
+   $ sudo parted /dev/mmcblk0 (Expand the partition /dev/mmcblk0p2)
+   $ sudo dd if=$HOME/sdbackup.img of=/dev/mmcblk0 bs=512
+
+   $ sudo e2fsck -f /dev/mmcblk0p2
+   $ sudo resize2fs /dev/mmcblk0p2
+   ```
+   
+   * 파티션을 resizing하기 위한 가장 간단한 방법은 `raspi-config` 메뉴의 `expand_rootfs` 옵션을 실행하는 것이다.
+   ```
+   $ sudo raspi-config 
+   7. Advance options --> A1 Expand Filesystem --> reboot
+   ```
+
+
+# How to display boot messages with UART serial
+
+ * https://elinux.org/RPi_Serial_Connection
+ 
+```bash
+Run sudo "raspi-config" and check if it has the option "advanced options" --> "serial". 
+If it has, set it to disabled and you're done.
+방법01 (추천): raspi-config --> advanced options --> serial
+
+UART0 pins (ttyAMA0) mapped for Bluetooth module and previously used pins mapped as UART1.
+To disable bluetooth module, append following line into /boot/config.txt:
+방법01: dtoverlay=pi3-disable-bt
+
+방법02: dtoverlay=pi3-miniuart-bt
+core_freq=250
+
+
+The Broadcom UART appears as /dev/ttyAMA0 under Linux, 
+append following line into /boot/cmdline.txt
+
+방법01: console=serial0,115200 console=ttyAMA0
+
+방법02: Remove the word "quiet" to allow display of boot activity.
+
+방법03: sudo raspi-gpio get
+```
+
+
+
+# 브라우져 한글깨짐현상 해결하기
+
+라즈비안OS를 깔고나서, 인터넷에 접속해봤더니 네이버 메인페이지가 네모로 가득차는 현상이 발생했다. 
+한글이 깨져서 나타났던 것이다. 간단하게 해결하는 방법을 공유한다.
+정말 간단하다. 아래명령어 한줄 치고,
+```bash
+sudo apt-get install fonts-unfonts-core
+sudo apt-get -y install ibus-hangul
+```
+재부팅 해준다. 
+또는 아래의 방법으로도 해결 가능하다.
+한글 폰트 설치 (네이버 나눔 폰트 설치)
+```bash
+sudo apt install fonts-nanum fonts-nanum-extra 
+sudo apt install nabi
+sudo apt install im-config
+```
+
+
+
+# 부팅시 SSH서버 실행하기
+
+### 내장된 SSH 서버 실행하기: /boot/ 폴더에 ssh 파일 만들기 
+Raspbian OS는 SSH 서버를 기본적으로 내장하고 있다. 
+SD카드의 루트 디렉토리 /boot에 ssh라는 이름의 빈 파일을 하나 새로 만든다.(확장자 없음) 
+그러면 부팅시 SSH 서버가 자동으로 enable 및 start 된다. 
+```bash
+cd /boot/
+touch ssh 
+```
+
+### SSH Server 직접 설치하기 
+```bash
+  sudo apt -y install openssh-server openssh-client
+  sudo systemctl restart ssh
+  sudo systemctl enable ssh  
+  sudo netstat -natp | grep 22
+```  
+
+
+hjoon0510 이라는 계정아이디를 추가하는 방법이다.  아래와 같이 터미널에서 adduser 명령을 이용하면 된다. 
+```bash
+$ sudo adduser hjoon0510
+Enter new UNIX password: ******
+Retype new UNIX password: ******
+        Full Name []: hjoon0510
+        Room Number []:
+        Work Phone []:
+        Home Phone []:
+        Other []:
+Is the information correct? [Y/n] Y
+
+```
+
+이제 windows7의 mobaxterm 프로그램을 실행한후에 RaspBerry Pi 3보드의 SSH 서버에 접속하면 된다.
+또는 터미널 환경에서 아래와 같이 명령을 실행하여 Pi3보드의 SSH 서버에 접속할수 있다. 
+```bash
+ssh {account_id}@192.168.219.104
+```
+
+# WiFi 자동잡기
+
+
+
+## USB WiFi (with Odrroid accessary)  ####################
+USB WiFi를 개발보드의 USB포트에 장착후에 wpa_passphrase + wpa_supplicant으로 콘솔에서 직접 무선 IP를 잡는 초간단 방법이다. 
+
+```bash
+wpa_passphrase leemgsiptime2g {wifi_password} > /etc/wpa_supplicant/wpa_supplicant.conf
+cat /etc/wpa_supplicant/wpa_supplicant.conf
+wpa_supplicant -B -i wlan1 -c /etc/wpa_supplicant/wpa_supplicant.conf
+
+ifconfig wlan1 192.168.10.201 netmask 255.255.255.0 up
+ifconfig wlan1
+route add default gw 192.168.10.1
+cat /etc/resolv.conf
+curl invain.mooo.com 
+
+
+## wifi setting
+vi /etc/rc.local 
+wpa_supplicant -B -i wlan1 -c /etc/wpa_supplicant/wpa_supplicant.conf
+ifconfig wlan1 192.168.10.201 netmask 255.255.255.0 up
+ifconfig wlan1
+route add default gw 192.168.10.1
+
+
+
+
+```
+
+
+### (라즈베리파이 제로 W): USB Gadget으로 유선 네트워크 구성하기
+라즈베리파이 제로 보드는 2가지 타입이 있다. 
+* 라즈베리파이 제로: 무선랜이 없는 개발보드, USB 가젯 인터넷을 사용할 수 있으나 무선랜을 사용 불가능함.
+* 라즈베리파이 제로 W (권장): 무선랜이 내장된 개발보드,  USB 가젯 인터넷을 사용할 수 있고 무선랜도 사용 가능함.
+
+라즈베리파이 제로 W 보드는 라즈베리파 3보드와 달리 USB 포트가 없다. 그래서 USB 마우스 및 USB 키보드를 라즈베리파이 제로 보드에 연결할수 없다. 따라서, 라즈베리파이 제로 보드에서 임베디드 시스템을 개발하려면 USB 가젯을 이용해야 한다. 라즈베리파이제로보드에 라즈비안OS를 플래싱한 마이크로SD 카드를 삽입하고, 노트북과 라즈베리파이 제로 보드 간에 USB 가젯 케이블을 연결한다. 이때, USB 가젯 케이블을 PWR 포트가 아닌 USB 포트에 연결을 해야한다. 그 다음 우분투 PC에서 "ubuntu$ ssh pi@raspberrypi"을 실행하여 라즈베리파이 제로보드의 SSH 서버에 (방법: 마이크로 SD카드의 /boot/폴더에 비어있는 ssh 파일 생성) 접속을 하도록 한다. 이렇게 접근후에 라즈베리파이 제로 보드에서 WiFi 인터넷 설정을 수행해야 한다. 
+
+
+```Step 1/3:``` 제일먼저, 라즈비안 OS를 플래싱한 마이크로 SD카드의 /boot/ 폴더에 아래의 작업을 반드시 수행해야 한다. 
+```bash
+
+1. ./boot/cmdline.txt: (... modules-load=dwc2,g_ether) at the end of the file. <--- 이 작업을 해야 윈도우10 장치관리자가 USB 가젯을 ""USB Ethernet/RNDIS Gadget #1" 정상적으로 인식 가능함.
+2. ./boot/config.txt: "dtoverlay=dwc2"
+3. ./boot/ssh (Create an empty file for the ssh server at boot time)
+4. ./boot/wpa_supplicant.conf (rpi보드 부팅후 폴더 위치 자동 변경됨. ./boot/wpa_supplicant/wpa_supplicant.conf)
+country=US
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    ssid="leemgsiptime2g"
+    psk="hjoon0510"
+    key_mgmt=WPA-PSK
+}
+```
+
+```Step 2/3:``` 윈도우10 용 RNDIS 드라이버 파일을 아래 주소에서 "mod-duo-rndis.zip" 파일 다운로드후 압축을 해제한다.
+윈도우10 PC에  RNDIS 드라이버를 설치해야만, 윈도우 PC와 라즈베리파이제로 모드간에 연결된 usb 케이블을 네트워크 포트로써 사용가능하다.
+* 세부 방법 (필독):
+  * USB 가젯으로 유선 인터넷 사용방법 - https://www.factoryforward.com/pi-zero-w-headless-setup-windows10-rndis-driver-issue-resolved/
+    * RNDIS 드라이버 다운로드 주소:  http://web1.moddevices.com/shared/mod-duo-rndis.zip
+  * WiFi 설정 방법(with /boot/wpa_supplicant.conf) - https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html
+  * WiFi 설정 방법(with iwlist on console manually) - https://webnautes.tistory.com/m/903
+
+
+이제 USB 가젯 케이블을 Winodws10 PC와 라즈베리파이 제로 보드간에 연결을 하도록 한다. 그 다음 "장치관리자"를 열어 "COM & PORT" 항목에 보이는 "USR Serail Port (COM3)"를 마우스로 우측 클릭을 한다.[드라이버 업데이트] > [컴퓨터에서 드라이버 소프트웨어 검색] > 윈도우즈 PC에 압축을 해제해 놓은  RNDIS 드라이버 폴더를  선택한다. 이제 장치관리자에서 [네트워크 어댑터] 리스트 아래에 [**USB Ethernet/ RNDIS Gadget**] (중요) 이 보일 것이다. 라즈베리파이 제로 보드를 부팅할때 커널이 로딩된후 15초 지나면 winodws 10 PC의 장치 관리자에 항상 **USB Ethernet/ RNDIS Gadget**이 자동 인식되어야 한다. 그래야만 windows 10 PC에서 라즈베리파이 제로 보드에 네트웍 연결이 가능하다.
+
+
+```Step 3/3:``` 윈도우10 PC에서 USB가젯 케이블을 통해서 라즈베리파이 제로보드의 SSH 서버에 접속하기 
+제어판 --> 네트워크 및 인터넷 --> 네트워크 연결 --> "이더넷5, USB Ethernet/RNDIS Gadget #3" 이 "식별되지 않은 네트워크" 정보가 보여야 한다.  만약 ping 명령이 제대로 동작 하지 않는다면, 라즈베리파이 제로보드를 부팅후에 10분 이상 기다렸다가 재시도록 해보야야 한다. 그래도 안되면, 라즈베리파이 제로 보드를 여러번 리부팅하면서 반복 시도해보야 하는 상당히 까다로운 **불편함** 이 있다. 
+
+
+Wndows10의 시작 메뉴에서 우측 마우스 클릭 > 네트워크 연결 > 어댑터 옵션 변경 > 현재 인터넷 연결된 네트워크(이더넷 or wifi) 선택. 
+우클릭 > 속성 > 공유탭 > '다른 네트워크 사용자가 이 컴퓨터의 인터넷 연결을 통해 연결할 수 있도록 허용' 선택 > 확인
+```bash
+C:\Users\invain>ping raspberrypi (Tip: "raspberrypi.local"를 타이핑 하지마세요.  최근 라즈비안 OS 이미지는 동작 불가.)
+Ping raspberrypi [fe80::a9c9:8be1:7e85:2195%37] 32바이트 데이터 사용:
+fe80::a9c9:8be1:7e85:2195%37의 응답: 시간=1ms
+fe80::a9c9:8be1:7e85:2195%37의 응답: 시간=1ms
+fe80::a9c9:8be1:7e85:2195%37의 응답: 시간=1ms
+fe80::a9c9:8be1:7e85:2195%37의 응답: 시간=1ms
+
+ubuntu$ssh pi@raspberrypi (또는 윈도우 PC에서 putty, teraterm, mobaxterm 프로그램을 이용할 것.)
+ubuntu$ cat /etc/hostname
+raspberrypi
+rpi$ vncserver
+ubuntu$ vncviewer raspberrypi:1 (또는 윈도우 PC에서 "VNC Viewer for Google Chrome" 앱을 실행할 것.)
+```
+
+### WiFi 자동잡기 (라즈베리파이 3): /boot/ 폴더에 wpa_supplicant.conf 파일 만들기 
+
+마찬가지로 /boot/ 폴더에 wpa_supplicant.conf파일을 아래 내용으로 만든다. notepad(메모장)을 연다. 아무런 내용 없이 Save as...한다. 
+반드시 file type을 all로 선택하고 확장자 없이 저장한다. 부팅시 /boot/폴더에 만든 wap_supplicant.conf 파일은 라즈베리파이 보드를 부팅하고 나면, /etc/wpa_supplicant/wpa_supplicant.conf 위치로 폴더 경로가 자동으로 변경된다. 이후의 정보 수정은 아래의 폴더에서 수정을 하면 된다. 
+* /boot/wpa_supplicant/wpa_supplicant.conf
+```bash
+country=US
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    ssid="yjk931004"
+    psk="12345678"
+    key_mgmt=WPA-PSK
+}
+```
+
+* 모바일폰을 이용한 RPI3의 WiFI 사용 예제 (2018.11.24)
+```bash
+1. 모바일폰(무선 Hotspot) ---------> RPI3 무선 WiFi : 동작 불안정 했음.
+   : 갤럭시 노트5 (RPI3에서 연결 불가능했음.)
+   : 갤럭시 7      (RPI3에서 연결이 종종 정상 동작했음.)
+* 팁: RPI보드의 내장 WiFi가 정상동장하지 않았음. 이때 외장 5370 USB WiFi을 이용시 정장 동작했음.
+
+2. 모바일폰(Bluetooth Hotspot) ---> RPI3 무선 WiFi: 동작 잘되었음.
+
+```
+
+### WiFi static IP 설정하기: RaspBian OS
+Raspbian OS는 WiFi 설정을 dhcpcd5 패키지를 이용한다. 
+wifi static ip 설정을 하기 위해서 /etc/dhcpcd.conf 파일을 편집해야 한다. 
+
+```bash
+rpi$ sudo vi /etc/dhcpcd.conf
+
+# fallback to static profile on eth0
+#interface eth0
+#fallback static_eth0
+
+interface wlan1
+static ip_address=192.168.10.122
+static routers=192.168.10.1
+static domain_name_servers=8.8.8.8
+static domain_search=
+```
+
+### WiFi static IP 설정하기: Ubuntu Mate
+Ubuntu Mate (ubuntu 16.04)OS는 WiFi 설정을 ifupdown 패키지를 이용한다. 
+
+```bash
+$ sudo vi /etc/network/interfaces
+# The wifi network interface
+auto wlan0
+iface wlan0 inet static
+    address 192.168.10.122
+    netmask 255.255.255.0
+    network 192.168.10.0
+    broadcast 192.168.10.255
+    gateway 192.168.10.1
+    dns-nameservers 192.168.10.1, 8.8.8.8, 8.8.4.4
+    wpa-ssid <Your wifi network SSID>
+    wpa-psk <Your hex encoded wifi WPA password>
+
+
+```
+
+최근의 몇몇 배포판 버젼들은 /etc/systemd/network 환경파일을 이용한다. 이 파일은 systemd-networkd 서비스데몬에 의해 관리된다. 
+$ sudo mv /etc/network/interfaces /etc/network/interfaces.save
+$ sudo vi /etc/systemd/network
+$ sudo systemctl enable systemd-networkd
+
+
+### 와이파이 설정하기
+
+라즈베리파이3에는 WiFi가 내장되어 있다. 그런데 어떤 WiFi SSID는 접속이 되고 어떤 WiFi 있는데, 활성화가 되지 않았다. 별짓을 다 했음에도 동작을 하지 않아서 집에 굴러다니던 USB형 WiFi동글을 꼽았더니 그냥 동작이 잘된다. 일반적으로 라즈베리파이3는 인터넷을 위한 방법으로 WiFi 와 블루투스 장치를 제공하고 있다. 여기서는 무선 WiFi 장치를 이용하는 방법으로 설명한다. 
+   * RPI3에서 wifi을 사용하기위해 가급적  (1) 인터넷 공유기와 (2) RPI3 보드 둘다 모두 "country=US"을 설정되어 있어야 한다. 
+   * 20012년에 출시되었던 wevo공유기는 호환이 안되어  (hjoon0510wevo2g)에 WiFi 연결이 안되었다. LG Uplus 공유기의 (hjoon0510lgu2g)에는 wifi접속이 잘되었다. 
+   * 우측 상단의 와이파이 아이콘을 클릭후 [v] "Enable WiFi"를 클릭하면 Wifi 리스트가 scanning된다. 
+   
+* RPI3 보드에서 원활한 WiFi 접속을 위해서 ko_KR.UTF8 설정하면 안되고, en_US.UTF8으로 설정해야 한다. 
+```bash
+$ locale
+$ sudo apt install language-pack-ko
+$ sudo locale-gen "en_US.UTF-8"
+$ sudo dpkg-reconfigure locales
+   [*] en_US.UTF-8   
+```
+
+* WiFI 환경파일 설정: WiFi Country에서 반드시 US (United State)를 선택해야 한다.
+   * 라즈비안OS의 경우
+```bash
+   시스템 - 기본설정 - Raspberry Configuration - Localisation - WiFi Country - US (United State) 선택
+```
+   * 우분투 마테의 경우 (콘솔에서 수동 설정방법: 비추천)
+```bash
+u1404@lgs:~# apt install wi  wpasupplicant  iproute2  net-tools
+u1404@lgs:~# rfkill unblock wifi
+u1404@lgs:~# iw dev
+u1404@lgs:~# ip link set mlan0 up
+u1404@lgs:~# ip link show mlan0
+u1404@lgs:~# iw dev mlan0 scan | grep SSID
+u1404@lgs:~# wpa_passphrase [SSID]   [SSID_PASSWORD]   >>  /etc/wpa_supplicant.conf
+(ctrl+z and bg)
+u1404@lgs:~# wpa_supplicant -i mlan0 -c /etc/wpa_supplicant.conf
+u1404@lgs:~# /etc/wpa_supplicant.conf
+country=US
+u1404@lgs:~# iw mlan0 link
+u1404@lgs:~# ip link show mlan0
+u1404@lgs:~# dhclient mlan0
+u1404@lgs:~# ifconfig 
+u1404@lgs:~# ping 8.8.8.8
+(Where mlan0 is wifi adapter and essid is SSID)
+(Add Routing manually)
+u1404@lgs:~# ip route add default via 192.168.1.1 dev mlan0
+
+
+```
+
+
+
+# Raspberry Pi 화면을 180도 회전시키기 
+* https://github.com/balena-os/balena-raspberrypi/issues/306
+
+### Rasbian OS 사용시 180도 회전 방법 
+```bash
+$ lsmod | grep -i ft
+rpi_ft5406             16384  0
+
+sudo vi /boot/config.txt 
+
+# 3.5 TFT LCD (7inch) monitor rotation
+# (0:0도, 1:90도, 2:180도, 3: 270도)
+# raspbian os는 반드시 아래처럼 dtoverlay를 설정해주어야 한다. 
+display_rotate=2
+dtoverlay=rpi-ft5406,touchscreen-inverted-x=1,touchscreen-inverted-y=1
+
+```
+
+### Ubuntu Mate 16.04 사용시 180도 회전 방법 
+```bash
+sudo vi /boot/config.txt 
+
+# 3.5 TFT LCD (7inch) monitor rotation
+# (0:0도, 1:90도, 2:180도, 3: 270도) 
+display_rotate=2 
+
+```
+
+# xinput_calibrator으로 터치스크린 보정하기  
+
+xinput_calibrator으로 작업을 한후에 재부팅시에 그래픽 화면이 나오지 않고 콘솔 화면만 나오는 에러가 있을수 있다. 
+필자의 경험상, 이 경우는 99% 대부분이 /etc/X11/xorg.conf.d/ (또는 /usr/share/X11/xorg.conf.d/) 폴더의 
+99-calibration.conf 파일 내용에 오타가 존재하기 때문이다.
+ 
+```bash
+# cd /etc/X11/xorg.conf.d/
+# mv 99-calibration.conf 99-calibration.conf.disable
+```
+
+
+### Raspbian OS 사용시 방법
+
+Rasp Berry Pi3 보드에서 xinput_calibrator을 실행한다.
+(반드시 원격 ssh접속이 아닌 라즈베리보드에서 내의 터미널에서 직접 실행해야 한다.)
+이제 손으로 터치 스크린 모니터를 4번 터치하여 터치스크린을 보정하도록 한다. 
+터치스크린 보정한 것을 부팅할때마다 반영이되도록 아래의 설정 작업을 하도록 한다.
+```bash
+sudo apt install -y xinput-calibrator
+xinput_calibrator
+(또는 [비추천] mobaxterm으로 ssh접속시:  DISPLAY=:0.0 xinput_calibrator)
+```
+
+
+xinput_calibrator을 종료하면 화면에 출력되는 내용을 아래와 같이 99-calibration.conf 에 추가하도록 해야 한다. 
+```bash
+sudo vim.tiny  /usr/share/X11/xorg.conf.d/99-calibration.conf
+----------------- input: start ---------
+Section "InputClass"
+        Identifier "calibration"
+        MatchProduct "FT5406 memory based driver"
+        Option  "MinX"  "65111"
+        Option  "MaxX"  "13"
+        Option  "MinY"  "64408"
+        Option  "MaxY"  "-307"
+EndSection
+
+----------------- input: start ---------
+sudo mkdir /etc/X11/xorg.conf.d/
+sudo ln -s /usr/share/X11/xorg.conf.d/99-calibration.conf  /etc/X11/xorg.conf.d/99-calibration.conf
+
+sudo reboot
+
+```
+
+### Ubuntu Mate 16.04 OS 사용시 방법 
+의존성 패키지들을 설치한다. 
+```bash
+sudo apt install libx11-dev libxext-dev libxi-dev x11proto-input-dev 
+```
+xinput_calibrator 패키지 소스를 다운로드한다.
+```bash
+wget http://github.com/downloads/tias/xinput_calibrator/xinput_calibrator-0.7.5.tar.gz 
+ls 
+```
+xinput_calibrator 소스를 컴파일 및 설치한다.
+```bash
+tar xvzf xinput_calibrator-0.7.5.tar.gz
+cd xinput_calibrator-0.7.5
+./configure 
+make 
+sudo make install 
+```
+Rasp Berry Pi3 보드에서 xinput_calibrator을 실행한다. (반드시 원격 접속이 아닌 라즈베리보드에서 실행해야 한다.)
+```bash
+xinput_calibrator 
+```
+
+이제 손으로 터치 스크린 모니터를 4번 터치하여 터치스크린을 보정하도록 한다. 
+터치스크린 보정한 것을 부팅할때마다 반영이되도록 아래의 설정 작업을 하도록 한다.
+```bash
+$ sudo mkdir /etc/X11/xorg.conf.d
+$ sudo vi /etc/X11/xorg.conf.d/99-calibration.conf
+ 
+Section "InputClass"
+  Identifier "calibration"
+  MatchProduct "FT5406 memory based driver"   
+  Option "Calibration" "801 14 463 -12"
+EndSection
+```
+
+# Timezone을 한국시간으로 변경하기
+
+한국기준으로 시간대(timeZone)를 변경해 보겠습니다.
+아래와 같이 그냥 간단히 해당 나라별 시간대 파일을
+/etc/localtime 파일에 overwrite하면 됩니다.
+rpi3# cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+이렇게 복사를 하면 덮어씌우겠냐고 물어보는데, 그냥 덮어 씌우면 됩니다.
+또는 timedatectl set-timezone Asia/Seoul 이렇게 수행해도 됩니다.
+  
+
+# Apache 웹서버 설치하기 
+라즈베리 파이 보드를 이용하여 자신만의 웹서버를 운영할 수 있다.
+```bash
+sudo apt install vim
+sudo apt install apache2
+sudo vim /etc/apache2/conf-available/charset.conf
+ * 변경전: #AddDefaultCharset UTF-8
+ * 변경전: AddDefaultCharset UTF-8
+sudo systemctl restart apache2 
+sudo systemctl enable apache2
+firefox http://192.168.219.104 
+sudo mv /var/www/html/index.html /var/www/html/index.html.disable
+sudo vi /var/www/html/index.html
+-------------------- index.html: start -------------------------------
+
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+<H2> This webserver is created by Gildong Hong</H2>
+<br>
+User1 &nbsp; &nbsp; &nbsp; User2 &nbsp; &nbsp; &nbsp; User3
+<br> 
+
+<br>
+<br>
+1. [사용자1]<br>
+오늘 수학숙제를 내는 날 입니다.<br>
+오늘은 고양이를 병원에 데려가는 날입니다.<br>
+5시에 수학학원을 가야 합니다.<br>
+-------------------- index.html: end -------------------------------
+```
+
+
+# PHP 개발환경 설치
+
+```bash
+$ sudo apt -y install php php-cgi libapache2-mod-php php-common php-pear php-mbstring
+(On rpi3, $ sudo a2enconf php7.0-cgi )
+$ sudo systemctl restart apache2 
+$ sudo cd /var/www/html
+$ sudo vi /var/www/html/index.php
+
+<html>
+<body>
+<?php
+  print Date("Y/m/d");
+?>
+</body>
+</html 
+```
+
+
+# MySQL 데이타베이스 서버 설치하기
+
+MYSQL 데이타베이스를 사용하기 위하여 mariadb-server, mariadb-client 패키지를 설치해야 합니다. 
+```bash
+sudo apt update
+sudo apt install mariadb-server 
+password:***** (default: raspberry)
+sudo apt install mariadb-client 
+sudo apt install php-mysql
+
+* [RPI3] mysql 접속이 제대로 되지 않는 다면, sudo mysql_install_db 명령을 수행하도록 한다. 
+* [RPI4] mysql 접속이 제대로 되지 않는 다면, sudo mysql_secure_installation 명령을 수행하도록 한다. 
+sudo mysql --user=root --password
+status;
+exit
+
+sudo /etc/init.d/mysql restart
+```
+
+
+기존의 MySQL root id의 암호를 잃어버렸을때 MySQL 암호를 초기화 하는 방법입니다.
+```bash
+sudo /etc/init.d/mysql stop
+sudo mysqld_safe --skip-grant-tables --skip-networking
+sudo mysql --user=root  
+
+use mysql;
+update mysql.user set password=password('raspberrypi') where user='root';
+flush privileges;
+update mysql.user set plugin='mysql_native_password' where user='root';
+flush privileges;
+quit
+
+sudo /etc/init.d/mysql stop
+sudo /etc/init.d/mysql start
+sudo mysql --user=root --password
+```
+ 
+
+기존의 MySQL 데이타베이스의 "root" id 암호를 변경하는 방법입니다. 
+```bash
+# To alter MySQL password from it's default empty value
+$ mysqladmin --user=root password "newpassword"
+
+# To alter MySQL password from the existing password value
+$ mysqladmin --user=root --password=oldpassword password "newpassword" 
+```
+
+
+
+이제 당신의 데이타베이스를 하나 만드는 예제입니다. 예를 들어  "sbdb"라는 데이타베이스를 만들겠습니다.
+```bash
+sudo mysql --user=root --password
+
+CREATE DATABASE sbdb;
+DROP USER 'sbuser'@'localhost';
+FLUSH PRIVILEGES;
+CREATE USER 'sbuser'@'localhost' IDENTIFIED BY 'sb2848';
+GRANT ALL PRIVILEGES ON sbdb.* TO 'sbuser'@'localhost';
+FLUSH PRIVILEGES;
+
+exit
+
+sudo mysql --user=root --password sbdb
+
+```
+
+당신이 만든 데이타베이스에 여러개의 테이블을 만들수 있습니다. 여기서는 "test_upload_file"이라는 테이블을 만드는 연습을 해보겠습니다. 
+Create a new table 'upload_file'.
+```bash
+sudo mysql --user=root --password sbdb
+
+CREATE TABLE test_upload_file (
+  file_id   VARCHAR(255) NOT NULL PRIMARY KEY,
+  name_orig VARCHAR(255),
+  name_save VARCHAR(255),
+  reg_time  TIMESTAMP NOT NULL
+);
+
+exit
+```
+
+# phpMyAdmin 설치하기
+MySQL 데이타베이스를 잘 모르는 경우에, 오픈소스 공짜 프로그램인 phpMyAdmin 을 이용하면 자신만의 데이타베이스/테이블을 쉽게 관리할수 있습니다. 
+```bash
+sudo apt install phpmyadmin
+----------------------------------------
+1. [*] apache2 okay
+2. Configure database for phpmyadmin with dbconfig-common? yes
+3. MySQL application password for phpmyadmin: **** okay
+----------------------------------------
+sudo vi /etc/apache2/apache2.conf
+Include /etc/phpmyadmin/apache.conf
+sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+sudo /etc/init.d/apache2 restart
+
+sudo vi /etc/phpmyadmin/config.inc.php 
+* 변경전: //$cfg['Servers'][$i]['AllowNoPassword'] = TRUE;
+* 변경후: $cfg['Servers'][$i]['AllowNoPassword'] = TRUE;
+
+sudo mysql --user=root --password
+use mysql;
+update user set plugin="" where user='root';
+flush privileges;
+quit; 
+
+
+firefox http://{IP-Address}/phpmyadmin
+- user: root
+- pass: *****
+```
+
+*무인관리시스템 데이타베이스 테이블 setup하기
+https://github.com/hjoon0510/ums/tree/master/mysql/
+http://192.168.219.122/phpmyadmin/ - sbdb 테이블 선택하기(좌측메뉴) -sql 메뉴 선택하기
+ 
+# VNC Server Setup on Raspberry Pi 3
+
+## Install built-in realvnc server on RPI3
+* sudo raspi-config --> interface setup --> [*] vnc service
+* Install tightvncserver on the Pi, or Install RealVNCviewer on your computer.
+  * RealVNC or Built-in vino-preference는 기본적으로 vnc 접속시 인증접속만을 허가한다. 따라서, 인증 접속기능이 없는 VNC Client으로 RealVNC server에 접속시에는 "No supported authentication methods!" 에러 메세지가 발생한다는 것을 알아야 한다. 
+
+## Install tightvncserver on RPI3
+Install VNC Server
+```bash
+$ sudo apt install tightvncserver   (OR sudo apt install vnc4server)
+$ vi ~/vnc.sh
+---------- vnc server:start ---------------
+#!/bin/sh
+vncserver :1 -geometry 1280x1024 -depth 24
+---------- vnc server: end ----------------
+
+$ sh ./vnc.sh
+You will require a password to access your desktops.
+Password:***
+Verify: ***
+Would you like to enter a view-only password (y/n)? n
+
+$ sudo netstat -nat | grep 5901
+
+$ cat ~/.vnc/xstartup
+---------- start ---------------
+#!/bin/sh
+xrdb $HOME/.Xresources
+xsetroot -solid grey -cursor_name left_ptr
+#x-terminal-emulator -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
+#x-window-manager &
+# Fix to make GNOME work
+export XKL_XMODMAP_DISABLE=1
+/etc/X11/Xsession
+---------- end ----------------
+
+# VNC Server 서비스를 죽이는 방법 
+$ vncserver -kill :1
+```
+
+Run VNC client
+
+방법1: Ultra vnc viewer 사용방법 
+```bash
+$ firefox http://www.uvnc.com/downloads/ultravnc.html 에서 프로그램을 다운로드한다.
+접속할때 아래처럼 IP 및 암호를 입력하면 된다. 
+ * IP 192.168.219.104:5901
+ * password: ***
+```
+
+방법2: mobaxterm의 vnc viewer 사용방법
+```bash
+Basic Vnc serttings:
+* Remote hostname or IP address: 192.168.219.104:5901
+* Port: 5901
+* password: ***
+```
+
+# USB Camera Test
+
+```bash
+sudo apt install cheese (*Raspbian OS geneated an runtime error.)
+cheese 
+
+sudo apt install webcamoid
+webcamoid
+
+sudo apt install fswebcam eog
+fswebcam image.jpg
+fswebcam image.jpg --no-banner -i 0
+eog image.jpg
+
+sudo apt install ffmpeg mplayer
+ffmpeg -t 120 -f v4l2 -framerate 25 -video_size 640x80 -i /dev/video0 output.mkv
+mplayer outout.mkv
+
+sudo apt-get install libav-tools
+avconv -t 10 -f video4linux2 -i /dev/video0 video0.avi
+
+How to Make Raspberry Pi Webcam Server and Stream Live Video || Motion + Webcam + Raspberry Pi
+https://www.instructables.com/id/How-to-Make-Raspberry-Pi-Webcam-Server-and-Stream-/
+
+sudo service motion restart ; sudo motion
+https://www.youtube.com/watch?v=wvebg9CQv_w (2018 asian game soccer, 2h 30m, yotube video)
+
+
+```
+
+
+# How to do realtime streamming service with camera and gstreamer software
+* http://www.icbanq.com/P007122889 (라즈베리파이 카메라 모듈 V2 8MegaPixel) 
+
+Install gstreamer
+```bash
+sudo apt update
+sudo apt upgrade
+
+sudo apt install gstreamer1.0
+----gstreamer installation: start ------------
+The following NEW packages will be installed:
+  debhelper dh-strip-nondeterminism freepats gstreamer1.0-clutter gstreamer1.0-doc
+  gstreamer1.0-dvswitch gstreamer1.0-espeak gstreamer1.0-fluendo-mp3 gstreamer1.0-hybris
+  gstreamer1.0-libav gstreamer1.0-libav-dbg gstreamer1.0-packagekit gstreamer1.0-plugins-bad
+  gstreamer1.0-plugins-bad-dbg gstreamer1.0-plugins-bad-doc gstreamer1.0-plugins-bad-faad
+  gstreamer1.0-plugins-bad-videoparsers gstreamer1.0-plugins-base-apps
+  gstreamer1.0-plugins-base-dbg gstreamer1.0-plugins-base-doc gstreamer1.0-plugins-good-dbg
+  gstreamer1.0-plugins-good-doc gstreamer1.0-plugins-ugly gstreamer1.0-plugins-ugly-amr
+  gstreamer1.0-plugins-ugly-dbg gstreamer1.0-plugins-ugly-doc gstreamer1.0-pocketsphinx
+  gstreamer1.0-vaapi gstreamer1.0-vaapi-doc intltool-debian libandroid-properties1
+  libarchive-zip-perl libavfilter-ffmpeg5 libavresample-ffmpeg2 libde265-0
+  libfile-stripnondeterminism-perl libglib2.0-dev libglib2.0-doc libgstreamer-plugins-bad1.0-0
+  libgstreamer1.0-0-dbg libgstreamer1.0-dev libhybris-common1 libmail-sendmail-perl libmedia1
+  libmimic0 libmjpegutils-2.1-0 libmms0 libmpeg2encpp-2.1-0 libmpg123-0 libmplex2-2.1-0 libofa0
+  libopencore-amrnb0 libopencore-amrwb0 libopencv-calib3d2.4v5 libopencv-contrib2.4v5
+  libopencv-features2d2.4v5 libopencv-flann2.4v5 libopencv-highgui2.4v5 libopencv-legacy2.4v5
+  libopencv-ml2.4v5 libopencv-objdetect2.4v5 libopencv-video2.4v5 libpcre3-dev libpcre32-3
+  libpcrecpp0v5 libpocketsphinx3 libsidplay1v5 libsoundtouch1 libspandsp2 libsphinxbase3 libsrtp0
+  libsys-hostname-long-perl libva-wayland1 libvo-aacenc0 libvo-amrwbenc0 libwildmidi-config
+  libwildmidi1 libzbar0 po-debconf zlib1g-dev
+----gstreamer installation: end ------------
+```
+Run shell script to stream captured image files
+```bash
+gst-launch-1.0 --version
+vi camera_test.sh
+#---------- script code: start -------------------
+#!/usr/bin/env bash
+MY_IP=$(hostname -I)
+echo "My IP Addr is $MY_IP"
+raspivid -t 0 -h 720 -w 1280 -fps 25 -hf -b 2000000 -o - | gst-launch-1.0 \
+-v fdsrc ! h264parse ! rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=$MY_IP port=5000
+#---------- script code: end -------------------
+
+chmod +x camera_test.sh
+./camera_test.sh
+```
+라즈베리파이 보드에 연결된 터치스크린/모니터에 카메라의 촬영 창이 실행되는 것을 볼수 있다.
+
+안드로이드 모바일 폰은 구글스토어에서 "RaspberryPi Camera viewer"라는 애플리케이션을 검색/설치하면 된다.
+그리고나서 해당 모바일 앱을 실행한후에 "+" 아이콘을 클릭하여 메뉴버턴을 생성한다. 생성된 메뉴버턴을 클릭한후 아래의 정보를 입력한다.
+* Name: 192.168.219.104
+* IP Address: 192.168.219.104
+* Port: 5000
+* Description: New Raspberry Pi device
+* Aspect ratio: 1.6 
+
+
+# How to enable onboard ALSA audio to play sound file
+RPI3보드와 HDMI 모니터간에 HDMI 케이블을 연결할경우에 mp3 플레이가 잘 안되는 문제가 있다. 
+* rpi3 를 부팅후에 사운드 플레이 소리가 안들린다면 종종  스피커 선을 rpi3으로부터 분리하였다가 다시 꼽으면 하드웨어적으로 인식이 다시 잘되는 경우가 있었다. 
+* 또는 우분투 마테를 부팅시에 로그인 아이디가 아닌 다른 아이디로 터미널환경에서 aplayer/cvlc 명령으로 .mp3를 플레이시에 권한이 없기때문에 사운드 플레이를 할수 없다.
+
+
+"aplay -l " 명령을 이용하여 사운드 카드 정보를 확인하다. 
+```bash
+hjoon0510@ubuntu:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+MobaXterm X11 proxy: Authorisation not recognised
+xcb_connection_has_error() returned true
+MobaXterm X11 proxy: Authorisation not recognised
+card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
+  Subdevices: 7/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 ALSA [bcm2835 IEC958/HDMI]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+```
+
+사운드 플레이를 위하여 커널의 사운드 모듈 (*.ko) 이 잘 실행되는지 확인한다. 
+```bash
+lsmod | grep snd_Bcm 
+snd_bcm2835            20447  1
+snd_pcm                75762  2 snd_bcm2835,snd_pcm_oss
+snd                    51908  11 snd_bcm2835,snd_pcm_oss,snd_timer,snd_pcm,snd_seq,snd_rawmidi,snd_seq_oss,snd_seq_device,snd_mixer_oss
+```
+
+사운드 스피커 플레이를 위하여 우분투 마테 커널의 환경 설정 파일을 아래와 같이 점검한다. 
+* 주의사항: 
+   * 스피커가 내장된 HDMI 모니터를 이용하여 사운드를 플레이하려면, /boot/config.txt 파일내의 "hdmi_drive=2" 설정을 해주어야 한다. 이 경우에는 사운드는 무조건 RPI3 보드의 내장 스피커가 아닌 HDMI 모니터의 스피커로만 음악이 플레이된다. 
+   * 만약 RPI3 보드의 내장 스피커로만 음악이 플레이 되게 하려면, /boot/config.txt 파일내의 "#hdmi_drive=2" 이렇게 주석 설정을 해주면 된다. 
+
+```bash
+sudo vi /boot/config.txt
+## Enable the onboard ALSA audio (loads snd_bcm2835) (rpi3에 내장되어 있는 사운드 카드를 사용하려고 할때 주석을 해제하여라. 기본 지원임.)
+dtparm=audio=on
+
+# Chooses between HDMI and DVI modes (HDMI 모니터가 사운드 스피터 내장되는 모니터 인경우에 주석을 해제하여라.)
+hdmi_drive=2
+```
+
+이제 .mp3 와 .wav 파일을 실행하여 스피커로 소리가 잘 들리는지 점검한다. 
+```bash
+aplay /usr/share/scratch/Media/Sounds/Vocals/Singer2.wav
+cvlc  /usr/share/scratch/Media/Sounds/Animal/Cat.mp3  --repeat
+```
+
+
+# How to make live stream video using vlc from webcam on Linux
+
+```bash
+# Verify Webcam Device on VLC
+$ ls /dev/video*
+$ vlc v4l2:///dev/video0
+
+# Live Stream Webcam from the Command Line
+$ cvlc v4l2:///dev/video0 :v4l2-standard= :input-slave=alsa://hw:0,0 :live-caching=300 :sout="#transcode{vcodec=WMV2,vb=800,scale=1,acodec=wma2,ab=128,channels=2,samplerate=44100}:http{dst=:8080/stream.wmv}"
+
+
+# Security Protections for Your Webcam Feed
+$ vlc http://<ip_address_of_webcam_host>:8080/stream.wmv
+$ mplayer http://<ip_address_of_webcam_host>:8080/stream.wmv
+
+
+```
+# How to record your voice from microphone of USB webcam using ALSA
+* 참고 사이트 
+   * https://www.raspberrypi.org/documentation/configuration/audio-config.md
+   * https://www.mythtv.org/wiki/Raspberry_Pi
+
+* Record a voice
+```bash
+ # make sure your microphone is connected to device
+alsamixer
+# capture microphone input with arecord
+
+sudo apt install alsa-utils
+# check probed audio devices
+arecord -l
+vi ~/.asoundrc
+# http://auction.kr/iBV35PO (Logitech, HD Pro Webcam C920)
+# hw:<card-val>,<device-val>
+pcm.copy { type plug slave { pcm "hw:2,0" } } ctl.!default { type hw card 2 }
+
+# record void for 10 seconds, then save audio file with .wav format
+arecord -D copy -d 10 foo.wav
+```
+Play recorded audio file
+```bash
+aplay foo.wav
+```
+
+# Play wma file with cvlc and mplayer command
+```bash
+Please make *.wma file by running recording software on winodws7.
+# gksu -u hjoon0510 cvlc ../sound/sound-rain.wma
+# mplayer  ./sound/weather-rain.wma
+```
+
+
+
+# 이메일 발송하기
+
+
+
+## ssmtp 프로그램 이용하기
+
+[ssmtp install]
+```bash
+$ sudo apt install ssmtp (smtp를 이용하여 이메일 메세지 발송 프로그램)
+$ sudo chmod 755 /etc/ssmtp
+$ cd /etc/ssmtp
+$ sudo cp ssmtp.conf ssmtp.conf.bak
+```
+
+[/etc/ssmtp/ssmtp.conf 파일 설정 변경]
+```bash
+root=hjoon0510@gmail.com
+mailhub=smtp.gmail.com:587
+rewriteDomain=
+hostname=localhost
+UseTLS=YES
+UseSTARTTLS=YES
+AuthUser=hjoon0510@gmail.com
+AuthPass=xxxxxxxxx
+FromLineOverride=YES
+```
+
+[구글 계정에서 이메일 SMTP 설정권한 변경]
+
+gmail smtp을 사용하여 정상적으로 이메일을 발송할수 있으려면, 
+보안 수준을 낮추어 주어야 ssmtp (Simple SMTP)접근 가능하고 이메일 전송이 가능하다.
+구글 계정 설정 -> 내 계정 -> 로그인 및 보안 -> 연결된 앱 및 사이트 - [v]보안 수준이 낮은 앱 허용 
+* https://myaccount.google.com/security?utm_source=OGB&pli=1
+
+
+[콘솔 테스트 예제]
+ssmtp 명령이 정상적으로로 동작하는지 알기 위해서 -v 옵션을 활용하는 것이 좋다. 
+```bash
+$ echo "Hi, This is test email." | ssmtp -v 이메일주소
+
+$ vim ./msg.txt
+To: myemailaddress@gmail.com
+From: myemailaddress@gmail.com
+Subject: alert
+
+The server is down!
+
+$ ssmtp 이메일주소  < ./msg.txt
+```
+
+[그림파일을 이메일로 첨부하여 보내는 방법: mpack, uuencode]
+```bash
+$ sudo apt install mpack (이메일을 보낼때 파일을 첨부하여주는 프로그램)
+$ mpack -s "제목" ./happy.jpg 이메일주소
+
+$ sudo apt install shareutils
+$ uuencode file.txt myfile.txt | sendmail user@example.com
+```
+
+[디폴트 mta 변경방법]
+출력되는 목록들중에서 "sendmail.ssmtp"을 선택해야 한다. 
+만약 선택가능한 MTA가 오직 1개이라면 " error: no alternative for mta" 메세지가 나올수 있으며, 
+이것은 오류가 없는 정상적인 결과라고 이해하면 된다. 
+```bash
+$ sudo update-alternatives --config mta
+```
+
+[PHP /etc/php/7.0/apache2/php.ini 파일 설정변경]
+```bash
+수정 전 --> ;sendmail_path = /usr/sbin/sendmail -t -i
+수정 후 --> sendmail_path = /usr/sbin/ssmtp -t
+```
+
+[Apache 웹서버 재시작하기]
+```bash
+sudo /etc/init.d/apache2 restart
+```
+
+[php언어로 이메일 발송하는 프로그램 코드 예제]
+```bash
+$ vi gmail_send.php 
+<?php
+$uname = "PyeongAn_Security";  //받는 사람에게 보여줄 이름을 적는다
+$uemail = "MyMail@gmail.com";  //gmail smtp 서버에 등록한 계정의 이메일주소
+$from ="=?UTF-8?B?".base64_encode($uname)."?=<$uemail>\r\n";
+$headers  = 'MIME-Version: 1.0' ."\r\n";
+$headers.='Content-type: text/html; charset=UTF-8' . "\r\n"; 
+$headers.='From:  '.$from."\r\n";  
+$createday = date("Y-m-d"); 
+$to='Receiver@naver.com'; // 받을 사람 이메일 주소 
+$subject='Raspberrypi test mail'; // 제목 
+$subject = "=?UTF-8?B?".base64_encode($subject)."?=";  // 이메일 제목 깨지지 않도록 인코딩 작업 하기 
+$msg="man의 자유공간<br>\n"; // 서명   
+mail($to,$subject,$msg,$headers);
+?>
+```
+
+## PHPMailer 프로그램 이용하기
+* https://github.com/PHPMailer/PHPMailer 에서 PHPMailer이라는 오픈소스 라이브러리를 다운로드한다. 
+* 예제 프로그램은 ./PHPMailer-master/examples/ 폴더에 위치하여 있다. 
+* 이제 아래와 같이 php 소스코드를 작성하여 사용하기마만 하면 된다. 
+```bash
+ require_once("./PHPMailer/class.phpmailer.php");
+ $mail                  = new PHPMailer();
+ $mail->IsHTML(true);                         // HTML의 형식으로보냄
+ $mail->IsSMTP();
+ $mail->SMTPSecure      = "ssl";
+ $mail->Port            = 465;                    // 465 or 587 set the SMTPport for the GMAIL server
+ $mail->Host            = "smtp.gmail.com";
+ $mail->ContentType     = "text/html";
+ $mail->Charset         = "utf-8";
+ $mail->Encoding        = "base64";
+ $mail->SMTPAuth        = true;                   // turn on  SMTP authentication
+ $mail->Username        = 구글계정;    
+ $mail->Password        = 구글계정SMTP비밀번호;   // SMTP 비밀번호
+ $mail->setFrom($mail->Username, "보내는사람");
+ $mail->addAddress(받을이메일주소);               // 받을 이메일 주소
+ $mail->Subject         = '제목';
+ $mail->Body            = '내용';  
+ if(!$mail->Send()){
+    echo "메일 전송에 실패 하였습니다.\n\n" .
+    $mail->ErrorInfo;
+ }
+ else{ 
+    echo "메일 전송에 성공 하였습니다.";
+ }
+
+```
+
+구글의 gmail stmp 서비스 설정에 설문제가 있다면 오류가 발생할수 있다. 
+```bash
+bash$mail->SMTPSecure = "ssl";
+$mail->Port = 465; // 465 or 587 set the SMTP port for the GMAIL server
+```
+위 소스가 안된다면
+```bash
+$mail->SMTPSecure = "tls";
+$mail->Port = 587; // 465 or 587 set the SMTP port for the GMAIL server
+```
+위 소스를 사용하면 된다. 
+stream_socket_enable_crypto 에러가 발생한다면 , php.ini 에서 extension=php_openssl.dll위 php_openssl 모듈을 활성화해야 한다.
+
+실제로 실행을 하면 위의  if(!$mail->Send()) 부분에서 에러가 발생한다. 이문제를 해결하기 위해서 구글 시큐리티로 접속후에  "내 Windows 컴퓨터의 메일"을 생성한다. 그리고나서 만들어진 시큐리티 암호 16값을 제공받아서 위의 소스코드  $mail->Password 에 적용하면 정상적으로 이메일이 발송됨을 확인할수 있다.
+* 참고:
+   * http://stackoverflow.com/questions/17227532/gmail-530-5-5-1-authentication-required-learn-more-at 
+   * https://support.google.com/mail/answer/185833?hl=en&visit_id=1-636532191943049589-646099977&rd=1#
+   
+```bash
+- Select app: smart_secrectary
+- Select device: default (don't select)
+```
+
+"GENERATE" 버턴을 클릭하면 아래와 같은 app password가 생성된다. 
+```bash
+- app password: rqnzataqgkdigxxx
+```
+
+
+# How to convert sound file from wma to wav
+```
+$ ffmpeg -i test.wma test.wav
+$ mpalyer test.wav
+```
+
+
+# 터미널을 통한 WiFi 연결
+
+다음 명령을 실행하여 wpa_supplicant.conf 파일을 엽니다. 
+wpa_supplicant.conf는 와이파이의 이름과 비밀번호에 대한 정보를 갖고 있는 파일입니다.
+
+```bash
+    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+```
+
+새 이미지의 SD카드일 경우 파일 안에 아무 내용이 없고, 사용하시던 것이라면 기존에 사용하시던 와이파이에 대한 정보가 있을 것입니다. 
+다음과 같이 연결할 와이파이에 대한 내용을 추가해 줍니다.
+
+```bash
+    network = {
+        ssid = "<와이파이 이름>"
+        psk = "<와이파이 비밀번호>"
+    }
+```
+
+ssid 는 와이파이 이름, psk 는 비밀번호에 해당하는 변수 같은 것이 되겠습니다. 비밀번호가 없다면,
+```bash
+    network = {
+        ssid = "<와이파이 이름>"
+        key_mgmt = NONE
+    }
+```
+
+숨겨진 네트워크(공유기 세팅에서 와이파이 이름이 다른 사람에게 뜨지 않게 한 경우)일 경우
+```bash
+   network = {
+        ssid = "<와이파이 이름>"
+        scan_ssid = 1
+        psk = "<와이파이 비밀번호>"
+    }
+```
+로 해줍니다.
+
+와이파이와 연결이 되었다면 ifconfig wlan0 명령을 통해 확인할 수 있습니다. 
+연결이 되지 않았다면 sudo reboot 명령을 통해 재부팅을 해봅니다.
+
+
+
+
+# cron job으로부터 email notifications를 중지하는 방법 
+
+* https://www.a2hosting.com/kb/developer-corner/linux/disabling-e-mail-notifications-from-cron-jobs
+
+This article demonstrates how to stop receiving e-mail notifications from cron jobs.
+
+By default, when a cron job is run, cron sends e-mail notifications to the user account. 
+To disable e-mail notifications, append >/dev/null 2>&1 to the command in the cron job. 
+This redirects all output from the cron job to the /dev/null device. 
+For example, the following cron job does not send e-mail notifications:
+
+$ vi /etc/crontab ( or $ crontab -e ) 
+```
+15 * * * Sun     /home/username/bigtask.sh > /dev/null 2>&1
+```
+To resume receiving e-mail notifications from cron jobs, simply remove >/dev/null 2>&1 from the command.
+
+
+# Raspbian OS에서 한글 입출력방법
+```bash
+sudo rpi-config
+[*] en_us.UTF8
+[*] ko_kr.UTF8
+
+
+1) fcitx: cat /etc/debian_version (9.8) 환경에서 강추 
+sudo apt install fcitx fcitx-hangul
+sudo apt install fonts-unfonts-core 
+sudo im-config -n fcitx
+
+2) ibus
+sudo apt install ibus ibus-hangul fonts-ufonts-core (** 비강추: 로케일 한글설정이 한글 키보드 전환 버그 존재함.)
+sudo im-config -n ibus
+
+
+3) nabi
+sudo apt install nabi fonts-nanum fonts-nanum-extra
+sudo apt install im-config
+im-config --> [*] default
+
+4) uim
+sudo apt install uim
+```

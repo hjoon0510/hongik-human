@@ -1,0 +1,128 @@
+
+
+===============================
+MY MEMO for Social Distancing on RPI3
+===============================
+
+
+* 동영상: 2018 asian game soccer, 2h 30m, yotube video
+https://www.youtube.com/watch?v=wvebg9CQv_w 
+
+############################################################################
+
+* USB 카메라사용방법
+
+https://www.e-consystems.com/blog/camera/ultra-hd-usb-camera-for-raspberry-pi-4/
+https://www.meccanismocomplesso.org/en/how-to-use-a-generic-usb-webcam-on-raspberry-pi/
+
+
+############################################################################
+* USB Camera Test
+
+
+sudo apt install cheese 
+cheese
+(NOTE: Raspbian OS causes an runtime error. So please use fswebcam software)
+ 
+
+sudo apt install webcamoid
+webcamoid
+
+
+sudo apt install fswebcam eog
+fswebcam image.jpg
+fswebcam image.jpg --no-banner -i 0
+
+
+sudo apt install ffmpeg
+ffmpeg -t 120 -f v4l2 -framerate 25 -video_size 640x80 -i /dev/video0 output.mkv
+
+
+sudo apt-get install libav-tools
+avconv -t 10 -f video4linux2 -i /dev/video0 video0.avi
+
+
+############################################################################
+* Motion 소프트웨어로 스트리밍 웹캠 카메라 서버 운영하기 
+
+https://www.instructables.com/id/How-to-Make-Raspberry-Pi-Webcam-Server-and-Stream-/
+
+sudo service motion restart 
+sudo motion
+
+sudo systemctl stop motion
+sudo systemctl disable motion
+
+
+
+############################################################################
+
+* Installing Miniconda3 for RPI/armv7l board
+===============================
+
+pip install opencv-contrib-python==3.4.3.18
+
+wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
+md5sum Miniconda3-latest-Linux-armv7l.sh
+bash Miniconda3-latest-Linux-armv7l.sh
+
+
+sudo nano /home/pi/.bashrc
+export PATH="/home/pi/miniconda3/bin:$PATH"
+
+conda install python=3.6
+conda create --name covid02 python=3.6
+source activate covid02
+
+
+time python3 social_distance_detector.py \
+    --input pedestrians.mp4  \
+    --output output.avi \
+    --display 0
+
+
+$ python
+>> import cv2
+>> cv2.__version__
+
+
+############################################################################
+
+
+* python3 packages for covid02(conda) / social facing on RPI4: 
+=============================================
+
+sudo apt update 
+sudo apt install python3-opencv python3-scipy ipython3
+
+sudo pip3 install opencv-contrib-python==3.4.3.18
+(Alternatively, sudo pip install opencv-contrib-python==4.1.0.25 )
+pip3 install imutils
+sudo apt install libatlas-base-dev libatlas-base-dev
+sudo apt install libjasper-dev
+sudo apt install libqt4-test
+
+
+cd /home/pi/covid/social-distance/social-distance-detector
+time ./run.sh 
+[INFO] loading YOLO from disk...
+[INFO] accessing video stream...
+  .... Wait for ** minutes 
+   (In case of Desktop PC, You need to wait for 6 minutes.)
+real	60m38.521s
+user	209m10.991s
+sys	3m22.541s
+
+
+sudo apt install mplayer
+mplayer output.avi 
+
+real	0m21.494s
+user	0m4.170s
+sys	0m0.126s
+
+
+############################################################################
+
+
+이상. 

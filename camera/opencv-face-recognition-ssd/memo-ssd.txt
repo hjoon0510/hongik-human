@@ -1,0 +1,60 @@
+
+Install face recognition software with SSD model
+================================================
+
+--------------------------------------------------------------------------
+* Install Python libraries
+$ pip3 install numpy 
+$ python3 -c "import numpy; print(numpy, numpy.version.version)"
+$ pip3 install imutils
+$ pip3 install scipy sklearn
+$ python3 -c "import sklearn; print(sklearn, sklearn.__version__)"
+
+--------------------------------------------------------------------------
+* 주의사항: sklearn 0.18 or 0.19.2 설치해야함. 
+sklerarn 0.22, 0.24 설치시에 sklearn.SVM호환성 문제로 인해 정상 실행안함. 
+sudo pip3 uninstall scikit-learn
+sudo pip3 install scikit-learn==0.18 --no-cache-dir
+
+$ pip3 show scikit-learn
+
+Name: scikit-learn
+Version: 0.18
+Summary: A set of python modules for machine learning and data mining
+Home-page: http://scikit-learn.org
+Author: Andreas Mueller
+Author-email: amueller@ais.uni-bonn.de
+License: new BSD
+Location: /usr/lib/python3/dist-packages
+Requires:
+Required-by: sklearn
+
+---------------------------------------------------------------------------
+
+* Question: ImportError: No module named 'sklearn'
+
+$ ./03-run-adrian.sh
+[INFO] loading face detector...
+[INFO] loading face recognizer...
+Traceback (most recent call last):
+  File "recognize.py", line 43, in <module>
+    recognizer = pickle.loads(open(args["recognizer"], "rb").read())
+ImportError: No module named 'sklearn'
+Building wheel for scikit-learn (setup.py) ... error
+
+* Solution:
+Try to install sklearn with apt instead of pip. 
+sudo apt install python3-scipy
+sudo apt install python3-sklearn
+
+
+Or reinstall another version as follows.
+sudo rm -R /home/ubuntu/.local/lib/python3.6/site-packages/sklearn
+sudo rm -R /home/ubuntu/.local/lib/python3.6/site-packages/scikit_learn-0.20.0-py3.6.egg-info
+sudo pip3.6 install -U scikit-learn
+
+python -c "import sklearn; print(sklearn, sklearn.__version__)"
+
+
+
+End of line. 

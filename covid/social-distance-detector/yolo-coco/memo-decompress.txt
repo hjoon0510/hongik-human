@@ -1,0 +1,13 @@
+
+GitHub does not support 100MB+ files.
+
+* How to compress
+split --bytes=90M ./yolov3.weights  ./prefix-yolov3.weights
+
+
+* How to decompress
+cat prefix-yolov3.weights* > ./yolov3.weights
+
+
+
+END
