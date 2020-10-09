@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# config.py 파일의 한글들을 읽기위해 위의 내용이 선언되어야 한다. 
+
 # USAGE
 # python social_distance_detector.py --input pedestrians.mp4
 # python social_distance_detector.py --input pedestrians.mp4 --output output.avi
@@ -10,7 +13,13 @@ import numpy as np
 import argparse
 import imutils
 import cv2
-import os
+import os 
+
+# install mysql library for python 3 
+# sudo pip3 install mysqlclient
+import MySQLdb
+import config as cfg
+from datetime import datetime
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -107,9 +116,63 @@ while True:
 		cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
 		cv2.circle(frame, (cX, cY), 5, color, 1)
 
+
+
+	# Combine database saveing: start -------------------------------
+	print('정보들을 데이타베이스의 테이블에 삽입합니다.')
+
+	# Mysql Database: Insert Into....
+	# @see 
+	# https://www.tutorialspoint.com/python/python_database_access.htm
+	# https://www.w3schools.com/python/python_mysql_insert.asp
+
+
+	timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+	# print(timestamp)
+
+	# https://stackoverflow.com/questions/6202726/writing-utf-8-string-to-mysql-with-python
+	# Open database connection
+	db = MySQLdb.connect(cfg.mysql['host'],cfg.mysql['user'],cfg.mysql['passwd'],cfg.mysql['db'],charset='utf8')
+
+	# Prepare a cursor object using cursor() method
+	cursor = db.cursor()
+
+	# Prevent broken korean statements
+	db.query("set names utf8;")
+	db.query("set character_set_connection=utf8;")
+	db.query("set character_set_server=utf8;")
+	db.query("set character_set_client=utf8;")
+	db.query("set character_set_results=utf8;")
+	db.query("set character_set_database=utf8;")
+
+	# Run a mysql command
+	violation=int(len(violate))
+	#print (" Current Violations: ", timestamp, int(len(violate)))
+	print ("Timestamp: ", timestamp , "Violation:", violation)
+	if violation >= 1:
+		try:
+			sql = """INSERT INTO covid_sd (time, site, location, violation) VALUES (%s, %s, %s, %s) """
+			# https://stackoverflow.com/questions/62656579/why-im-getting-unicodeencodeerror-charmap-codec-cant-encode-character-u2
+			# for python2
+			record_tuple = (timestamp, cfg.covid_sd['site'], cfg.covid_sd['location'], violation)
+			# for python3
+			#record_tuple = (timestamp, cfg.covid_sd['site'].encode('utf-8').decode('ascii', 'ignore'), cfg.covid_sd['location'].encode('utf-8').decode('ascii', 'ignore'), violation)
+			cursor.execute(sql, record_tuple)
+			db.commit()
+			cursor.close()
+			print("Record inserted successfully into a table.")
+		except:
+			db.rollback()
+			print("Failed to insert a record into a table.")
+   
+		# disconnect from server
+		db.close()
+
+	# Combine database saveing: end    -------------------------------
+
 	# draw the total number of social distancing violations on the
 	# output frame
-	text = "Social Distancing Violations: {}".format(len(violate))
+	text = "Social Distancing Plus(Violater): {}".format(len(violate))
 	cv2.putText(frame, text, (10, frame.shape[0] - 25),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 0, 255), 3)
 
