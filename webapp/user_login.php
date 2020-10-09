@@ -4,7 +4,7 @@ include('webapp_config.php');
 $mysqli=mysqli_connect($db_host,$db_user,$db_pass,$db_name);
 ?>
 <br>
-<img src=./images/login-welcome.gif.png width=300 height=250 border=0></img>
+<img src=./images/login.PNG width=300 height=250 border=0></img>
 <br>
  <form method="post" action="./user_login_check.php">
  <div>

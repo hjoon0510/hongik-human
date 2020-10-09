@@ -2,9 +2,9 @@
 <?php
 require("./menu2.php");
 ?>
-<br><br>
+<br>
 <tr><td><center>
-<img src=images/logo.png.png width=400 height=150></img>
+<img src= logo.png width=400 height=400></img>
 <br><br>
 <t able width=90% border=0>
 <itr><td><center>

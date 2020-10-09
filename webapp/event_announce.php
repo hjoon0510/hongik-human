@@ -87,7 +87,7 @@ $current_page = floor($no/$page_size);
 <?php
 require ("./menu2.php");
 ?>
-<span style="font-weight: bold; font-size: 1.5em;"> 일정 알림화면</span>
+<span style="font-weight: bold; font-size: 1.5em;"> 경고알림화면</span>
 <br>
 <br>
 <table width=370>
@@ -104,13 +104,10 @@ echo " ■ 일정 개수: $total_row 개<br>";
 <tr height=40 bgcolor=skyblue>
  	<th width=100>일자 (*)</th> 
 	<th width=150> 이름</th>
-	<th width=500>일정 내용</th>
+	<th width=500>알림 내용</th>
 </tr>
 <?php
-// Author: Hyunjoon Lim, Cheolwhan Oh
 // Title: a program to display store information
-// Date: Nov-06-2019
-// License: Star License
 //
 
 $stmt = mysqli_prepare($db_conn, $query);
@@ -156,7 +153,7 @@ mysqli_close($db_conn);
 ?>
 </table>
 
-<font color=red> ■ 출력방법: 오늘부터 열리는 이벤트행사들을 내림차순 순서로 화면에 출력 합니다.</font>
+<font color=red> ■ 출력방법:경고알림들을 내림차순 순서로 화면에 출력 합니다.</font>
 
 <!-- 페이지를 표시하기 위한 테이블 -->
 <br>

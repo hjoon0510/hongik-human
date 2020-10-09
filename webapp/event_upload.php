@@ -32,10 +32,10 @@ if(!isset($_SESSION['id'])) {
 <body>
 <form name="uploadForm" id="uploadForm" method="post" action="event_upload_process.php" enctype="multipart/form-data" onsubmit="return formSubmit(this);">
 <div>
-<a href="./event_file_list.php"><img src=./images/file-list.png alt="이벤트 일정 리스트로 이동하기" title="이벤트 일정 리스트로 이동하기" border=0 width=50 height=50></img></a>
+<a href="./event_file_list.php"><img src=./images/file-list.png alt="메시지 리스트로 이동하기" title="메시지 리스트로 이동하기" border=0 width=50 height=50></img></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <br>
-<font size=5 color=black> 일정 업로드 화면</font>
+<font size=5 color=black> 메시지 업로드 화면</font>
 <br>
 <font color=blue>설명이 필요한 경우 <img src=images/item.png border=0 height=15 width=15 />을 클릭하여 정보를 확인하세요.</font>
 <br><br>

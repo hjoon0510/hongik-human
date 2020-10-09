@@ -83,7 +83,7 @@ $current_page = floor($no/$page_size);
 <?php
 require ("./menu2.php");
 ?>
-<span style="font-weight: bold; font-size: 1.5em;"> 일정 관리</span>
+<span style="font-weight: bold; font-size: 1.5em;"> 알림 관리</span>
 <br>
 <br>
 <a href="./event_file_list.php"><img src=./images/file-list.png border=0 width=50 height=50></img></a>
@@ -99,7 +99,7 @@ require ("./menu2.php");
 	<th width=40>상세</th>
 	<th width=120>일자(*)</th>
 	<th width=150>이름</th>
-	<th width=500>일정 내용</th>
+	<th width=500>알림 내용</th>
 <!--    <th width=60>울림수</th> //-->
 <!--	<th>파일 ID</th>   //-->
 <!-- 	<th>업로드 파일명</th>  //-->

@@ -59,18 +59,16 @@
 
 * 설치 방법 
 ```bash
-ssh id: ****
-ssh pass:***
+ssh ID: ****
+ssh PASS:***
 
 pwd
 sudo mkdir -p /work/google-speech-api
-sudo chown {your_id}:{your_id} /work/google-speech-api
+sudo chown pi:pi /work/google-speech-api
 cd /work/google-speech-api
-ls -al 
-
 git clone https://github.com/GoogleCloudPlatform/php-docs-samples.git
 cd php-docs-samples/ 
-git checkout 20190808
+git checkout 20180808
 git branch
 git reset --hard e97b51c050c030c761bf12568b7f03c5433b3960
 
@@ -86,7 +84,7 @@ composer update
 apt-get install php-bcmath
 export GOOGLE_APPLICATION_CREDENTIALS=/work/google-speech-api/google-speech-auth-key-ums.json
 php speech.php 
-- 구글이 프로그램을 계속 업데이트하고 있기때문에 speech.php 파일명이 다른 파일명으로 변경될수 있다.
+- 구글회사가 이 프로그램을 계속 업데이트하고 있기때문에 speech.php 파일명이 다른 파일명으로 변경되어 있을수 있다.
 - https://github.com/GoogleCloudPlatform/php-docs-samples/tree/e97b51c050c030c761bf12568b7f03c5433b3960/speech (Aug-08-2018)
 
 php speech.php transcribe test/data/audio32KHz.raw --encoding LINEAR16 --sample-rate 32000
@@ -139,33 +137,31 @@ ffmpeg -i 201807201630.m4a -ac 1 -af aformat=s32:176000 201807201630.flac
 ##  Speech-To-Text 변환 테스트하기 
 * Run .raw
 ```bash
-cd ~/google-speech-api/php-docs-samples/speech/ 
+cd /work/google-speech-api/php-docs-samples/speech/ 
+file /work/google-speech-api/20180720_195535.raw
+/work/google-speech-api/20180720_195535.raw: data
 
-file ~/google-speech-api/20180720_195535.raw
-/var/www/khs7516/google-speech-api/20180720_195535.raw: data
-
-
-php speech.php transcribe ~/google-speech-api/20180720_195535.raw  --encoding LINEAR16 --language-code ko-KR --sample-rate 16000
+php speech.php transcribe /work/google-speech-api/20180720_195535.raw  --encoding LINEAR16 --language-code ko-KR --sample-rate 16000
 Transcript: 녹음 기능을 다시 테스트해 봅니다 지금은 곰 레코드 프로그램을 이용하여 녹음 하고 있고요 녹음 파일의 포맷은 m4a입니다
 Confidence: 0.85077333
 
-php speech.php transcribe ~/google-speech-api/20180720_195535.raw --encoding LINEAR16 --language-code ko-KR --sample-rate 32000                 
+php speech.php transcribe /work/google-speech-api/20180720_195535.raw --encoding LINEAR16 --language-code ko-KR --sample-rate 32000                 
 Transcript: 녹음 기능을 다시 톨스 톨스 근데 지금은 꽃무늬 코드 프로그램을 이용하여 녹음 하고 있고요 녹음 파일 보물섬 m4a입니다                                                                                 
 Confidence: 0.8391638
 
-php speech.php transcribe ~/google-speech-api/20180720_195535.raw  --encoding LINEAR16 --language-code ko-KR --sample-rate 42000
+php speech.php transcribe /work/google-speech-api/20180720_195535.raw  --encoding LINEAR16 --language-code ko-KR --sample-rate 42000
 ( * 실험 결과: sample-rate 수치를 42,000으로 하였을때, 아무런 결과가 출력되지 않았음.)
 ```
 
 * Run .flac
 ```bash
-php speech.php transcribe ~/google-speech-api/201807222150_434082af99805667cc9e060ba55fb083.flac  --encoding FLAC --language-code ko-KR --sample-rate 44100
+php speech.php transcribe /work/google-speech-api/201807222150_434082af99805667cc9e060ba55fb083.flac  --encoding FLAC --language-code ko-KR --sample-rate 44100
 Transcript: 지금 상추 가게 오시면은 특별히 오늘만 상추를 60% 할인된 가격으로 여러분 고객님은들을 모십니다 지금 빨리 어서 오십시오
 Confidence: 0.8430271
 ```
 
 ## Terminology
-* FLAC(Free Lossless Audio Codec, /ˈflæk/)은 오디오 데이터 압축을 위한 파일 형식이다. 무손실 압축 포맷이다. 다시 말해서, MP3, AAC, Vorbis와는 달리 오디오 스트림에 손실이 발생하지 않는다.
+* FLAC(Free Lossless Audio Codec)은 오디오 데이터 압축을 위한 파일 형식이다. 무손실 압축 포맷이다. 다시 말해서, MP3, AAC, Vorbis와는 달리 오디오 스트림에 손실이 발생하지 않는다.
 * PCM raw: 압축되지 않는 Raw 오디오 포맷이다. 
 
 *  주파수별 소리 정확도
@@ -177,14 +173,14 @@ Confidence: 0.8430271
 ## 초간단 테스트 방법(flac사용)
 ```
 
-cd /var/www/html/ums/webapp/audio/20180804
+cd /var/www/html/[project_name]/webapp/audio/20180804
 export GOOGLE_APPLICATION_CREDENTIALS=/work/ums-79c7917331aa.json
 
 sudo rm -f 201808042130_45e234af17ecda8a63889767053b1b89.flac
 sudo ffmpeg -i 201808042130_45e234af17ecda8a63889767053b1b89.m4a -af aformat=s16:44100 201808042130_45e234af17ecda8a63889767053b1b89.flac
 
-speech=/home/hjoon0510/google-speech-api/php-docs-samples/speech/speech.php 
-/usr/bin/php $speech transcribe 201808042130_45e234af17ecda8a63889767053b1b89.flac  --encoding FLAC --language-code ko-KR --sample-rate 44100
+speech=/work/google-speech-api/php-docs-samples/speech/speech.php 
+/usr/bin/php $speech transcribe 201808042130_45e234af17ecda8a63889767053b1b89.flac --encoding FLAC --language-code ko-KR --sample-rate 44100
 
 ```
 

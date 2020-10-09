@@ -206,6 +206,9 @@ if ($input_minute ==  "0")
 <label for="upfile"> </label><font size=5 color=black><img src=images/item.png onclick="showpopup_audio_file();" onmouseover="this.style.cursor='pointer'" border=0 height=25 width=25 />음성 파일 <input type="file" name="upfile" id="upfile" /></font>
 </div>
 <br>
+※ <font color=red> <b>./audio/</b></font> 폴더의 권한은 www-data 이어야합니다.
+<br>
+그렇지 않을 경우 빈 화면만 보일 수 있습니다.
 <font color=red><p id="audio_load"></p></font>
 <input type="submit" onclick="progress_func()" value="등록하기" />
 <!- @see https://www.w3schools.com/tags/ev_onclick.asp ->

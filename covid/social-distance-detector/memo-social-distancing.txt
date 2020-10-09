@@ -101,7 +101,7 @@ pip3 install imutils
 sudo apt install libatlas-base-dev libatlas-base-dev
 sudo apt install libjasper-dev
 sudo apt install libqt4-test
-
+sudo apt install libqtgui4
 
 cd /home/pi/covid/social-distance/social-distance-detector
 time ./run.sh 

@@ -543,19 +543,22 @@ firefox http://192.168.219.104
 sudo mv /var/www/html/index.html /var/www/html/index.html.disable
 sudo vi /var/www/html/index.html
 -------------------- index.html: start -------------------------------
-
+<html>
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
-<H2> This webserver is created by Gildong Hong</H2>
+<H2> This webserver for web applications</H2>
 <br>
-User1 &nbsp; &nbsp; &nbsp; User2 &nbsp; &nbsp; &nbsp; User3
-<br> 
+<img src=https://img.kr.news.samsung.com/kr/wp-content/uploads/2018/06/new-IT-0625-3.png height=200 width=250 ></img>
+<br>
+이미지 화면 출력 테스트
+<br>
 
 <br>
 <br>
-1. [사용자1]<br>
+1. <b>[사용자1]</b><br>
 오늘 수학숙제를 내는 날 입니다.<br>
 오늘은 고양이를 병원에 데려가는 날입니다.<br>
-5시에 수학학원을 가야 합니다.<br>
+5시에 컴퓨터학원을 가야 합니다.<br>
+<html>
 -------------------- index.html: end -------------------------------
 ```
 
@@ -691,9 +694,9 @@ firefox http://{IP-Address}/phpmyadmin
 - pass: *****
 ```
 
-*무인관리시스템 데이타베이스 테이블 setup하기
+* 데이타베이스 테이블 setup하기
 https://github.com/hjoon0510/ums/tree/master/mysql/
-http://192.168.219.122/phpmyadmin/ - sbdb 테이블 선택하기(좌측메뉴) -sql 메뉴 선택하기
+http://192.168.219.122/phpmyadmin/ - sbdb 테이블 선택하기(좌측메뉴) - sql 메뉴 선택하기
  
 # VNC Server Setup on Raspberry Pi 3
 
