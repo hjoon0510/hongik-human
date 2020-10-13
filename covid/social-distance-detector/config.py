@@ -26,5 +26,6 @@ table1 = {"name": "upload_file",
 # Specify Site and Location for COVID-19 social distancing
 covid_sd = {"site"  : "영통공원",
             "location"  : "공연장",
-            "description"    : "sbdb"
+            "description"    : "sbdb",
+            "violator_num"  : 0
         }

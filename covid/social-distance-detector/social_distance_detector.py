@@ -79,7 +79,7 @@ while True:
 	violate = set()
 
 	# ensure there are *at least* two people detections (required in
-	# order to compute our pairwise distance maps)
+	# order to compute our pairwise distance maps) , 2M(social distancing)
 	if len(results) >= 2:
 		# extract all centroids from the results and compute the
 		# Euclidean distances between all pairs of the centroids
@@ -119,7 +119,7 @@ while True:
 
 
 	# Combine database saveing: start -------------------------------
-	print('정보들을 데이타베이스의 테이블에 삽입합니다.')
+	print('정보들을 데이타베이스의 테이블에 삽입을 시도합니다.')
 
 	# Mysql Database: Insert Into....
 	# @see 
@@ -149,7 +149,7 @@ while True:
 	violation=int(len(violate))
 	#print (" Current Violations: ", timestamp, int(len(violate)))
 	print ("Timestamp: ", timestamp , "Violation:", violation)
-	if violation >= 1:
+	if violation >= cfg.covid_sd['violator_num']:
 		try:
 			sql = """INSERT INTO covid_sd (time, site, location, violation) VALUES (%s, %s, %s, %s) """
 			# https://stackoverflow.com/questions/62656579/why-im-getting-unicodeencodeerror-charmap-codec-cant-encode-character-u2
