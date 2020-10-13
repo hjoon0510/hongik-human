@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-# @Author: Hyunjoon Lim
-# @Date: Sep-02-2019
 # @Title: module to play audio files and save bell_number value into db
-
 
 import os
 import time

@@ -4,7 +4,6 @@
 # @note    doc/How-to-use-google-speech-api.md
 # @site:   https://cloud.google.com/speech-to-text/
 # @author: Hyunjoon Lim <hjoon0510@gmail.com>
-#          Cheolwhan Oh <dhdldzhkf13@gmail.com>
 
 # Configuration variables for Google AI speech API
 # "message": The request is missing a valid API key.

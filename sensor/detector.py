@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 # @Author: Hyunjoon Lim
-# @Date: Nov-02-2019
 # @Title: Motion Probing Software with PIR motion sensor
-# @License: Star
-# @Prequisites:
+# @Requirement:
 # $ sudo apt install python-mysqldb
 # $ sudo apt install mplayer vlc
 # $ sudo pip install gpiozero
