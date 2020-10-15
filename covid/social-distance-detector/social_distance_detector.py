@@ -14,6 +14,7 @@ import argparse
 import imutils
 import cv2
 import os 
+import time
 
 # install mysql library for python 3 
 # sudo pip3 install mysqlclient
@@ -144,6 +145,10 @@ while True:
 	db.query("set character_set_client=utf8;")
 	db.query("set character_set_results=utf8;")
 	db.query("set character_set_database=utf8;")
+
+	time.sleep(5)
+	print("sleep five seconds")   
+	# Delays for 5 seconds. You can also use a float value.
 
 	# Run a mysql command
 	violation=int(len(violate))

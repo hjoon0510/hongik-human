@@ -5,9 +5,12 @@ echo -e "Running application with python3..."
 if [[ $1 == camera ]]; then
     time python3 social_distance_detector.py
 ## with video files (mp4)
-else
+
+elif [[ $1 == video ]]; then
     time python3 social_distance_detector.py \
     --input pedestrians.mp4  \
     --output output.avi \
     --display 0
+else
+    echo -e "usage:$0 camera(video)"
 fi
