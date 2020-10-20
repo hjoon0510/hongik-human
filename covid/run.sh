@@ -2,6 +2,8 @@
 
 echo -e "Running application with python3..."
 echo -e "NOTE: If you want to quit a GUI app, press a 'q' key."
+echo -e " "
+
 ## with camera (v4l2)
 if [[ $1 == camera ]]; then
     time python3 social_distance_detector.py
