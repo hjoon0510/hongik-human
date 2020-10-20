@@ -12,5 +12,7 @@ elif [[ $1 == video ]]; then
     --output output.avi \
     --display 0
 else
-    echo -e "usage:$0 camera(video)"
+    echo -e "Usage:$0 {camera|video}"
+    echo -e " * camera: /dev/video0"
+    echo -e " * video : pedestrians.mp4"
 fi

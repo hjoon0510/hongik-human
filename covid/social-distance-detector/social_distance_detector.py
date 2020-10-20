@@ -146,9 +146,6 @@ while True:
 	db.query("set character_set_results=utf8;")
 	db.query("set character_set_database=utf8;")
 
-	time.sleep(5)
-	print("sleep five seconds")   
-	# Delays for 5 seconds. You can also use a float value.
 
 	# Run a mysql command
 	violation=int(len(violate))
@@ -175,9 +172,68 @@ while True:
 
 	# Combine database saveing: end    -------------------------------
 
+
+	# play audio notice:start-----------------------------------------
+        if violation >= 50:
+		# Note that mplayer is not good in RPI4. It results in "Audio device got stuck!" error.
+		# audio out options of mplayer: -ao alsa , -ao pluse
+		# cmd = "mplayer -ao pulse " + search_path + audio_file
+		audio_file = "audio-notice/50.m4a" 
+		cmd = "cvlc -A alsa,none --alsa-audio-device default " + audio_file + " vlc://quit"
+		print ("[DEBUG] Succeeded, command: %s." % cmd)
+		print ("[DEBUG] We found audio file.")
+		print ("[DEBUG] Let's play the audio file:" , audio_file)
+		os.system(cmd)
+
+	elif violation >= 40:
+		audio_file = "audio-notice/40.m4a" 
+		cmd = "cvlc -A alsa,none --alsa-audio-device default " + audio_file + " vlc://quit"
+		print ("[DEBUG] Succeeded, command: %s." % cmd)
+		print ("[DEBUG] We found audio file.")
+		print ("[DEBUG] Let's play the audio file:" , audio_file)
+		os.system(cmd)
+
+	elif violation >= 30:
+		audio_file = "audio-notice/30.m4a" 
+		cmd = "cvlc -A alsa,none --alsa-audio-device default " + audio_file + " vlc://quit"
+		print ("[DEBUG] Succeeded, command: %s." % cmd)
+		print ("[DEBUG] We found audio file.")
+		print ("[DEBUG] Let's play the audio file:" , audio_file)
+		os.system(cmd)
+
+	elif violation >= 20:
+		audio_file = "audio-notice/20.m4a" 
+		cmd = "cvlc -A alsa,none --alsa-audio-device default " + audio_file + " vlc://quit"
+		print ("[DEBUG] Succeeded, command: %s." % cmd)
+		print ("[DEBUG] We found audio file.")
+		print ("[DEBUG] Let's play the audio file:" , audio_file)
+		os.system(cmd)
+
+	elif violation >= 1:
+		audio_file = "audio-notice/10.m4a" 
+		cmd = "cvlc -A alsa,none --alsa-audio-device default " + audio_file + " vlc://quit"
+		print ("[DEBUG] Succeeded, command: %s." % cmd)
+		print ("[DEBUG] We found audio file.")
+		print ("[DEBUG] Let's play the audio file:" , audio_file)
+		os.system(cmd)
+	else:   
+		print ("[DEBUG] Now, people keep social distancing rule very well.")
+		audio_file = "audio-notice/00.m4a" 
+		cmd = "cvlc -A alsa,none --alsa-audio-device default " + audio_file + " vlc://quit"
+		print ("[DEBUG] Succeeded, command: %s." % cmd)
+		print ("[DEBUG] We found audio file.")
+		print ("[DEBUG] Let's play the audio file:" , audio_file)
+		os.system(cmd)
+
+	# play audio notice:start-----------------------------------------
+
+	time.sleep(5)
+	print("Sleeping five seconds .....")   
+	# Delays for 5 seconds. You can also use a float value.
+
 	# draw the total number of social distancing violations on the
 	# output frame
-	text = "Social Distancing Plus(Violater): {}".format(len(violate))
+	text = "Social Distancing Plus(Violator): {}".format(len(violate))
 	cv2.putText(frame, text, (10, frame.shape[0] - 25),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 0, 255), 3)
 
