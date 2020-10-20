@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # config.py 파일의 한글들을 읽기위해 위의 내용이 선언되어야 한다. 
 
