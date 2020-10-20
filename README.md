@@ -18,7 +18,7 @@
 2. 그 다음 아래와 같이 웹앱을 설치해야 한다. 다음과 같이 설치하십시오.
 
 ```bash
-# windows10 PC에서 mobaxterm 소프트웨어를 이용하여 ssh 세션을 실행하십시오
+# Windows10 PC에서 mobaxterm 을 실행한후 좌측 메뉴상단의  ssh 세션을 실행하십시오
 
 $ sudo chown pi:pi /var/www/html
 $ cd /var/www/html
@@ -27,11 +27,11 @@ $ sudo apt -y install git vim
 $ sudo update-alternatives --set editor /usr/bin/vim.tiny
 $ git clone https://github.com/hjoon0510/{PRJ_NAME}.git
 $ cd ./{PRJ_NAME}
-$ sudo chown -R www-data:www-data /var/www/html/{PRJ_NAME}/audio/
+$ sudo chown -R www-data:www-data /var/www/html/{PRJ_NAME}/audio/ <-- 이 작업을 미수행시 음성파일 업로드안되어 클라우드 번역 실행 오류난다.
 $ sudo visudo
 --------------- /etc/sudoers: start ----------------
 #includedir /etc/sudoers.d
-www-data        ALL=(ALL) NOPASSWD: ALL <---- Please append a aphache webserver ID here.!!!!
+www-data        ALL=(ALL) NOPASSWD: ALL <---- 여기에 아파치 웹서버의 아이디  www-data를 추가하도록 한다.!!!!
 --------------- /etc/sudoers: ending ---------------
 $ vi ./webapp/webapp_config.php  
    $db_host = 'localhost';
@@ -41,7 +41,7 @@ $ vi ./webapp/webapp_config.php
 ```
 
 # 실행방법
-1. 웹 응용 프로그램 및 주변장치 실행 프로그램을 시작하는 방법에 대해 설명합니다.  
+1. 웹앱 및 주변장치 실행 프로그램을 시작하는 방법에 대해 설명합니다.  
 소프트웨어는 launcher라는 프로그램을 통해서 RPI Board를 부팅시마다 자동으로 실행됩니다. 
 그러므로, 아래처럼 gcc 명령으로 launcher.c를 컴파일하여주세요. 
 그 다음으로  컴파일하여 생성된 `launcher` 파일을 실행만 하면 됩니다.
