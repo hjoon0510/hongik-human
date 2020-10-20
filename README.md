@@ -1,6 +1,6 @@
 # Introduction
 
-이 프로젝트는 딥러닝 Speech API와 IOT 센서 주변장치 (예: Motion Sensor)를 이용하여 자동 관리 시스템을 개발하기 위한 소스들을 구성하고 있다. 
+이 프로젝트는 IoT, Cloud, Deep-Learning 등을 이용하여  개발하기 위한 소스들을 구성하고 있다. 
 
 
 # 설치 방법
@@ -12,10 +12,10 @@
 ### 설치하기
 우리는 Python (모션 인식 프로그램) 및 PHP (웹 응용 프로그램) 언어를 이용하여 개발하였습니다.
 
-1. 제일먼저 ./mysql/폴더를 참고하여 mysql기반의 데이타베이스를 설치해야 한다. 
+1. 제일먼저 ./mysql/폴더의 sql 파일들을 참고하여 mysql 데이타베이스를 설치해야 한다. 
 
 
-2. 그 다음 아래와 같이 앱을 설치해야 한다. 다음과 같이 설치하십시오.
+2. 그 다음 아래와 같이 웹앱을 설치해야 한다. 다음과 같이 설치하십시오.
 
 ```bash
 # windows10 PC에서 mobaxterm 소프트웨어를 이용하여 ssh 세션을 실행하십시오
@@ -25,13 +25,13 @@ $ cd /var/www/html
 $ sudo apt -y remove nano
 $ sudo apt -y install git vim
 $ sudo update-alternatives --set editor /usr/bin/vim.tiny
-$ git clone https://github.com/hjoon0510/golden-time.git
-$ cd ./golden-time
-$ sudo chown -R www-data:www-data /var/www/html/golden-time/audio/
+$ git clone https://github.com/hjoon0510/{PRJ_NAME}.git
+$ cd ./{PRJ_NAME}
+$ sudo chown -R www-data:www-data /var/www/html/{PRJ_NAME}/audio/
 $ sudo visudo
 --------------- /etc/sudoers: start ----------------
 #includedir /etc/sudoers.d
-www-data        ALL=(ALL) NOPASSWD: ALL <---- Please append a aphache webserver id here.!!!!
+www-data        ALL=(ALL) NOPASSWD: ALL <---- Please append a aphache webserver ID here.!!!!
 --------------- /etc/sudoers: ending ---------------
 $ vi ./webapp/webapp_config.php  
    $db_host = 'localhost';
@@ -41,7 +41,10 @@ $ vi ./webapp/webapp_config.php
 ```
 
 # 실행방법
-1. 웹 응용 프로그램 및 주변장치 실행 프로그램을 시작하는 방법에 대해 설명합니다.  소프트웨어는 launcher라는 프로그램을 통해서 부팅시마다 자동으로 실행됩니다. 그러므로, 아래처럼 gcc 명령으로 launcher.c를 컴파일하여주세요. 그 다음으로  컴파일하여 생성된 `launcher` 파일을 실행만 하면 됩니다.
+1. 웹 응용 프로그램 및 주변장치 실행 프로그램을 시작하는 방법에 대해 설명합니다.  
+소프트웨어는 launcher라는 프로그램을 통해서 RPI Board를 부팅시마다 자동으로 실행됩니다. 
+그러므로, 아래처럼 gcc 명령으로 launcher.c를 컴파일하여주세요. 
+그 다음으로  컴파일하여 생성된 `launcher` 파일을 실행만 하면 됩니다.
 ```bash
 $ gcc launcher.c -o launcher 
 $ ./launcher
@@ -49,7 +52,7 @@ $ firefox http://{rpi_ip_address}/{GitHub-Repository}/
 ```
 2. camera 기능 애플리케이션을 사용하는 방법입니다. 
 
-2.1 제일먼저 파이썬으로 개발되어 있는 라이브러리들을 설치해야 한다. 
+2.1 제일먼저 아래의 파이썬 라이브러리들을 설치해야 한다. 
 ```
 pip3 install face_recoginition
 pip3 install dlib
@@ -81,13 +84,13 @@ cd opencv-face-recognition-ssd
 2.3 사회적 거리두기 프로그램을 실행한다. 
 * 요구사항: Python 3.5.3
 ```bash
-cd covid/social-distancing
+cd covid/
 ./run.sh
 
 ```
 
-3.push 서비스를 설치한다 
-* https://github.com/hjoon0510/golden-time/blob/master/gotify/README.md
+3. Push 서비스를 설치한다 
+* https://github.com/hjoon0510/{PRJ_NAME}/blob/master/gotify/README.md
 
 # 참고자료
 * 라즈베리파이로 시작하는 핸드메이드 IoT, https://github.com/bjpublic/raspberrypi
