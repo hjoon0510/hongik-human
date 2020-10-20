@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # @Author: Hyunjoon Lim
 # @Title: Motion Probing Software with PIR motion sensor
