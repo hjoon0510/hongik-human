@@ -232,15 +232,13 @@ while True:
 	print("Sleeping 5 seconds .....")   
 	# Delays for 5 seconds. You can also use a float value.
 
-	# draw the total number of social distancing violations on the
-	# output frame
+	# draw the total number of social distancing violators on the output frame
 	print("Running a GUI application .....")   
 	text = "Social Distancing Plus(Violator): {}".format(len(violate))
 	cv2.putText(frame, text, (10, frame.shape[0] - 25),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 0, 255), 3)
 
-	# check to see if the output frame should be displayed to our
-	# screen
+	# check to see if the output frame should be displayed to our screen
 	if args["display"] > 0:
 		# show the output frame
 		cv2.imshow("Frame", frame)
@@ -250,15 +248,14 @@ while True:
 		if key == ord("q"):
 			break
 
-	# if an output video file path has been supplied and the video
-	# writer has not been initialized, do so now
+	# if an output video file path has been supplied and
+        # the video writer has not been initialized, do so now
 	if args["output"] != "" and writer is None:
 		# initialize our video writer
 		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 		writer = cv2.VideoWriter(args["output"], fourcc, 25,
 			(frame.shape[1], frame.shape[0]), True)
 
-	# if the video writer is not None, write the frame to the output
-	# video file
+	# if the video writer is not None, write the frame to the output video file
 	if writer is not None:
 		writer.write(frame)
