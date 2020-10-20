@@ -6,8 +6,8 @@
 # python social_distance_detector.py --input pedestrians.mp4 --output output.avi
 
 # import the necessary packages
-from pyimagesearch import social_distancing_config as config
-from pyimagesearch.detection import detect_people
+from pyimage import social_distancing_config as config
+from pyimage.detection import detect_people
 from scipy.spatial import distance as dist
 import numpy as np
 import argparse
@@ -174,7 +174,7 @@ while True:
 
 
 	# play audio notice:start-----------------------------------------
-        if violation >= 50:
+	if violation >= 50:
 		# Note that mplayer is not good in RPI4. It results in "Audio device got stuck!" error.
 		# audio out options of mplayer: -ao alsa , -ao pluse
 		# cmd = "mplayer -ao pulse " + search_path + audio_file
@@ -228,11 +228,12 @@ while True:
 	# play audio notice:start-----------------------------------------
 
 	time.sleep(5)
-	print("Sleeping five seconds .....")   
+	print("Sleeping 5 seconds .....")   
 	# Delays for 5 seconds. You can also use a float value.
 
 	# draw the total number of social distancing violations on the
 	# output frame
+	print("Running a GUI application .....")   
 	text = "Social Distancing Plus(Violator): {}".format(len(violate))
 	cv2.putText(frame, text, (10, frame.shape[0] - 25),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 0, 255), 3)
