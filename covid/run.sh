@@ -5,10 +5,13 @@ echo -e "NOTE: If you want to quit a GUI app, press a 'q' key."
 echo -e " "
 
 ## with camera (v4l2)
+# if you wanna run  the GUI app, use "--display 1".
+# if you wanna skip the GUI app, use "--display 0".
 if [[ $1 == camera ]]; then
-    time python3 social_distance_detector.py
-## with video files (mp4)
+    time python3 social_distance_detector.py \
+    --display 1
 
+## with video files (mp4)
 elif [[ $1 == video ]]; then
     time python3 social_distance_detector.py \
     --input pedestrians.mp4  \

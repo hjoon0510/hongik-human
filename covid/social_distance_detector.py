@@ -64,6 +64,10 @@ ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 # initialize the video stream and pointer to output video file
 print("[INFO] accessing video stream...")
 vs = cv2.VideoCapture(args["input"] if args["input"] else 0)
+
+vs.set(cv2.CAP_PROP_FPS, int(5))
+print("[INFO] Frame rate : {0}".format(vs.get(cv2.CAP_PROP_FPS)))
+
 writer = None
 
 # loop over the frames from the video stream
@@ -238,16 +242,18 @@ while True:
 	print("Sleeping 5 seconds .....")   
 
 	# draw the total number of social distancing violators on the output frame
-	print("Running a GUI application .....")   
 	text = "Social Distancing Plus(Violator): {}".format(len(violate))
 	cv2.putText(frame, text, (10, frame.shape[0] - 25),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 0, 255), 3)
 
 	# check to see if the output frame should be displayed to our screen
 	if args["display"] > 0:
-		# show the output frame
-		cv2.imshow("Frame", frame)
-		key = cv2.waitKey(1) & 0xFF
+		# display obtained image window in  the output frame (GUI APP)
+		print("Running a GUI application .....")   
+		cv2.imshow("CAM_Window", frame)
+		#cv2.imshow("Changed", frame)
+                # if you want to change a waiting time (ms) between frames, change cv2.waitKey(1)
+		key = cv2.waitKey(10) & 0xFF
 
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
@@ -255,6 +261,9 @@ while True:
 
 	# if an output video file path has been supplied and
         # the video writer has not been initialized, do so now
+        # if you want to change FPS(frame per seconds), change the value 25.
+	# writer = cv2.VideoWriter(args["output"], fourcc, 25,
+	#           (frame.shape[1], frame.shape[0]), True)
 	if args["output"] != "" and writer is None:
 		# initialize our video writer
 		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
