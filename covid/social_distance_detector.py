@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 # config.py 파일의 한글들을 읽기위해 위의 내용이 선언되어야 한다. 
 
-# USAGE
+# @USAGE
 # python social_distance_detector.py --input pedestrians.mp4
 # python social_distance_detector.py --input pedestrians.mp4 --output output.avi
+# @Requirement
+# sudo apt install omxplayer
+# sudo apt install vlc
+# sudo apt install mplayer
+# install mysql library for python 3 
+# sudo pip3 install mysqlclient
+
 
 # import the necessary packages
 from pyimage import social_distancing_config as config
@@ -17,8 +24,6 @@ import cv2
 import os 
 import time
 
-# install mysql library for python 3 
-# sudo pip3 install mysqlclient
 import MySQLdb
 import config as cfg
 from datetime import datetime
@@ -81,7 +86,7 @@ while True:
 	violate = set()
 
 	# ensure there are *at least* two people detections (required in
-	# order to compute our pairwise distance maps) , 2M(social distancing)
+	# order to compute our pairwise distance maps), 2M(social distancing)
 	if len(results) >= 2:
 		# extract all centroids from the results and compute the
 		# Euclidean distances between all pairs of the centroids
@@ -151,7 +156,7 @@ while True:
 	# Run a mysql command
 	violation=int(len(violate))
 	#print (" Current Violations: ", timestamp, int(len(violate)))
-	print ("Timestamp: ", timestamp , "Violation:", violation)
+	print ("Timestamp: ", timestamp , "The number of violators:", violation)
 	if violation >= cfg.covid_sd['violator_num']:
 		try:
 			sql = """INSERT INTO covid_sd (time, site, location, violation) VALUES (%s, %s, %s, %s) """
@@ -226,11 +231,11 @@ while True:
 		print ("[DEBUG] Let's play the audio file:" , audio_file)
 		os.system(cmd)
 
-	# play audio notice:start-----------------------------------------
+	# play audio notice:end -----------------------------------------
 
+	# Delays for 5 seconds. You can also use a float value.
 	time.sleep(5)
 	print("Sleeping 5 seconds .....")   
-	# Delays for 5 seconds. You can also use a float value.
 
 	# draw the total number of social distancing violators on the output frame
 	print("Running a GUI application .....")   
