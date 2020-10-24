@@ -9,7 +9,7 @@ echo -e " "
 # if you wanna skip the GUI app, use "--display 0".
 if [[ $1 == camera ]]; then
     time python3 social_distance_detector.py \
-    --display 1
+    --display 0
 
 ## with video files (mp4)
 elif [[ $1 == video ]]; then
