@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>위험 지역 — 지역 3</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <link href="static/img/favicon.png" rel="icon">
+  <link href="static/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="static/vendor/ionicons/css/ionicons.min.css" rel="stylesheet">
+  <link href="static/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="static/vendor/venobox/venobox.css" rel="stylesheet">
+
+  <link href="static/vendor/aos/aos.css" rel="stylesheet">
+
+  <link href="static/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <header id="header" class="fixed-top">
+    <div class="container-fluid">
+
+      <div class="row justify-content-center">
+        <div class="col-xl-11 d-flex align-items-center">
+          <h1 class="logo mr-auto"><a href="index.html">SD+</a></h1>
+
+          <nav class="nav-menu d-none d-lg-block">
+            <ul>
+              <li class="active"><a href="http://127.0.0.1:5000/">홈</a></li>
+              <li><a href="http://127.0.0.1:5000/#facts">대시보드</a></li>
+              <li><a href="http://127.0.0.1:5000/#portfolio">위험 지역</a></li>
+              <li><a href="http://127.0.0.1:5000/#testimonial">개발자</a></li>
+              <li><a href="#contact">문의 및 지원</a></li>
+
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <main id="main">
+  </br>
+  </br>
+  </br>
+    <section id="services">
+      <div class="container" data-aos="fade-up">
+
+        <header class="section-header wow fadeInUp">
+          <h3>지역 3</h3>
+          <p>지역 3에 대한 정보입니다.</p>
+        </header>
+
+        <div class="row">
+
+          <div class="col-lg-4 col-md-6 box" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon"><i class="ion-ios-location"></i></div>
+            <h4 class="title"><a href="">주소</a></h4>
+            <p class="description">수원시 영통구 봉영로 1517번길 극동풍림아파트</p>
+          </div>
+          <div class="col-lg-4 col-md-6 box" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon"><i class="ion-ios-people"></i></div>
+            <h4 class="title"><a href="">사회적 거리두기</a></h4>
+            <p class="description">70%의 사람들이 사회적 거리두기를 준수하고 있습니다.</p>
+          </div>
+          <div class="col-lg-4 col-md-6 box" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon"><i class="ion-android-warning"></i></div>
+            <h4 class="title"><a href="">위험 단계</a></h4>
+            <p class="description"><strong>주의</strong></p>
+          </div>
+
+        </div>
+          <canvas id="myChart"></canvas>
+        </div>
+
+    </section>
+
+    <div id="daumRoughmapContainer1603527956591" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+
+    <script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+    <script charset="UTF-8">
+      new daum.roughmap.Lander({
+        "timestamp" : "1603527956591",
+        "key" : "22mwz",
+        "mapWidth" : "400",
+        "mapHeight" : "360"
+      }).render();
+    </script>
+
+  </main>
+
+
+  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+  <script src="static/vendor/jquery/jquery.min.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="static/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="static/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="static/vendor/counterup/counterup.min.js"></script>
+  <script src="static/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="static/vendor/venobox/venobox.min.js"></script>
+  <script src="static/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="static/vendor/aos/aos.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="static/js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+  <script>
+
+    var ctx = document.getElementById("myChart").getContext('2d');
+    
+    
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["0시", "3시", "6시", "9시", "12시", "15시", "18시", "21시"],
+            datasets: [{
+                label: '지역 3',
+                data: [2, 1, 5, 43, 67, 30, 17, 3],
+                backgroundColor: [
+                    'rgba(24,210,110, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(24,210,110, 1)'
+                ],
+                borderWidth: 5
+            }]
+        },
+        options: {
+            maintainAspectRatio: true, 
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
+    </script>
+
+</body>
+
+</html>
