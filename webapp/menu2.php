@@ -72,6 +72,7 @@ body {
   <a href="./audio_file_list.php"><i class="fa fa-fw fa-user"></i>음성파일 관리 </a>
   <a href="./event_file_list.php"><i class="fa fa-fw fa-user"></i>알림관리 </a>
   <a href="./event_announce.php"><i class="fa fa-fw fa-user"></i>알림화면 </a>
+  <a href="http://192.168.10.184:1010/"><i class="fa fa-fw fa-user"></i>SD+ (User) </a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
   </a>
