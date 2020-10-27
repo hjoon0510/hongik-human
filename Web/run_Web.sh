@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Requirement:
+# Requirement for Python webframework (Flask):
 # sudo pip install falsk-cors
-echo -e "Starting website of SD+ ..."
+echo -e "Starting website of SD+ (Social Distancing Plus) ..."
 sudo python app.py
