@@ -1,9 +1,7 @@
 /**
- * @Author: Hyunjoon Lim, Cheolwhan Oh
- * @Date: Nov-17-2019
- * @Title: Launcher to start (1) apache web-server and (2) pir sensor program
- * @License: Star
- * @Prequisites: PHP web-application, Python PIR motion sensor application
+ * @Author: Hyunjoon Lim
+ * @Title: Launcher to start (1) apache web-server and (2) applications automatically
+ * @Prequisites: PHP web-application, Python applications (ex. PIR, Face, Camera, ...)
  * @Description:
  * - How to compile: $ gcc -o launcher launcher.c
  * - How to run:     $ launcher
