@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # @author Hyeonjoon Lim
-# @brief Create tables
+# @brief Create tables into Mysql DB
 # @see https://www.tutorialspoint.com/python/python_database_access.htm
 
 import MySQLdb
