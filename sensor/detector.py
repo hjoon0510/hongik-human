@@ -11,7 +11,7 @@
 # 1. Check location of +DC voltage (output) and GND (ground) line on RPi3
 # 2. Change (a)sensor and (b)pulse button [orange color] appropriately
 #
-# @Map:                             ,--------.
+# @Map: You must set-up lines correctly into GPIO slot.                            ,--------.
 # . Power (+DC voltage):  2,2 ------|        |
 # . Signal(Output)     : 11,7 ------| PIR    | GPIO17 = pin no. 11
 # . GND (Ground)       :  6,6 ------| Sensor |
@@ -20,7 +20,7 @@
 # How to run program with root privilege:
 # $ sudo visudo 
 #  # User privilege specification
-#    root         ALL=(ALL:ALL) ALL
+#    root            ALL=(ALL:ALL) ALL
 #    hjoon0510       ALL=NOPASSWD: ALL
 # $ ./detector.py
 #
