@@ -1,6 +1,6 @@
 # Introduction
 
-이 프로젝트는 IoT, Cloud, Deep-Learning 등을 이용하여  개발하기 위한 소스들을 구성하고 있다. 
+이 프로젝트는 IoT, Cloud, Deep-Learning 등을 이용하여 개발한 소프트웨어 소스들을 구성하고 있다. 
 
 
 # 설치 방법
