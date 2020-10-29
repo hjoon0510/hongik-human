@@ -52,41 +52,21 @@ $ firefox http://{rpi_ip_address}/{GitHub-Repository}/
 ```
 2. camera 기능 애플리케이션을 사용하는 방법입니다. 
 
-2.1 제일먼저 아래의 파이썬 라이브러리들을 설치해야 한다. 
+2.1 제일 먼저 아래의 주요 파이썬 라이브러리들을 설치한다. 
 ```
 pip3 install face_recoginition
 pip3 install dlib
 pip3 install opencv-contrib-python
 pip3 install imutils
 pip3 install scikit-learn
+pip3 install Flask
 ```
 
-2.2 얼굴인식 프로그램을 실행한다.
-2.2.1 Hog 알고리즘으로 실행할 경우 (얼굴)인식률이 높지만 정확도가 떨어진다.
-* 요구사항: Python 3.5.3
-* 이미지 폴더: ./dataset/
-```bash
-cd opencv-face-recognition-hog
-./01-encoding.sh
-./02-run.sh
-```
-
-2.2.2 SSD 알고리즘으로 실핼할 경우 (얼굴)인식률이 떨어지지만 정확도가 높다.
-* 요구사항: Python 3.5.3
-* 이미지 폴더: ./dataset/
-```bash
-cd opencv-face-recognition-ssd
-./01-dataset.sh
-./02-train.sh
-./03-run-camera.sh
-```
-
-2.3 사회적 거리두기 프로그램을 실행한다. 
+2.2 사회적 거리두기 프로그램을 실행한다. 
 * 요구사항: Python 3.5.3
 ```bash
 cd covid/
 ./run.sh
-
 ```
 
 3. Push 서비스를 설치한다 
