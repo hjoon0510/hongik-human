@@ -3,6 +3,7 @@
 - [운영체제 설치하기](#운영체제-설치하기)
 - [브라우져 한글깨짐 현상 해결하기](#브라우져-한글깨짐현상-해결하기)
 - [부팅시 SSH서버 실행하기](#부팅시-SSH서버-실행하기)
+- [유선네트웍 고정IP 설정하기](#유선네트웍-고정IP-설정하기) 
 - [WiFi 자동잡기](#WiFi-자동잡기)
 - [와이파이 설정하기](#와이파이-설정하기)
 - [Raspberry Pi 화면을 180도 회전시키기](#raspberry-pi-화면을-180도-회전시키기)
@@ -288,6 +289,59 @@ raspberrypi
 rpi$ vncserver
 ubuntu$ vncviewer raspberrypi:1 (또는 윈도우 PC에서 "VNC Viewer for Google Chrome" 앱을 실행할 것.)
 ```
+
+
+
+### 유선네트웍고정IP설정하기 
+
+수동으로 설정하기 
+```bash
+ifconfig eth0 115.145.170.237 netmask 255.255.255.0 up
+route add gw 
+route add default gw 115.145.170.1 dev eth0
+```bash
+
+
+GUI를 이용하기 
+```bash
+1. 우측 상단의 유선 네트웍 아이콘을 오른쪽마우스로 클릭한다. 
+2. Network Preferences 메뉴에서 Configure:interface/eth0을 선택한다. 
+3. 아래의 설정을 한다. 
+[v] Automatically configure empty options
+[v] Disable IPv6
+IPv4 address: 192.168.10.18
+Roter: 192.168.10.1
+DNS Servers: 8.8.8.8
+DNS Search: 8.8.4.4
+```
+
+(Before 2018-03-21, /etc/network/interfaces)
+```bash
+$ sudo vi /etc/network/interfaces 
+autoh eth0
+allow-hotplug eth0
+iface eth0 inet static
+address 192.168.10.18
+netmask 255.255.255.0
+gateway 192.168.10.1
+```
+(After 2018-03-21, /etc/dhcpcd.conf)
+```bash
+$ sudo vi /etc/dhcpcd.conf 
+interface eth0
+static ip_address=192.168.10.18/24
+static routers=192.168.10.1
+static domain_name_servers=8.8.8.8
+static domain_search=8.8.4.4
+static netmask=255.255.255.0
+```
+네트웍 환경설정 재시작하기 
+```bash
+$ sudo /etc/init.d/networking restart
+$ ifconfig
+$ netstat -nr
+```
+
 
 ### WiFi 자동잡기 (라즈베리파이 3): /boot/ 폴더에 wpa_supplicant.conf 파일 만들기 
 
